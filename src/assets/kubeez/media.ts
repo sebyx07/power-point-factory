@@ -9,13 +9,25 @@ export const videoKey = (v: VideoGenerateSpec) =>
   cacheKey(["video", v.prompt.trim(), v.model ?? env.kubeezVideoModel, v.duration ?? 5, v.aspect ?? "16:9", v.sound ?? false]);
 export const musicKey = (m: MusicGenerateSpec) => cacheKey(["music", m.prompt.trim(), m.model ?? env.kubeezMusicModel, m.instrumental ?? true]);
 
+/** already generated? (no key needed) */
+export async function isCached(deckDir: string, src: { generateVideo: VideoGenerateSpec } | { generateMusic: MusicGenerateSpec }): Promise<boolean> {
+  const dir = generatedDir(deckDir);
+  const file = "generateVideo" in src ? `${videoKey(src.generateVideo)}.mp4` : `${musicKey(src.generateMusic)}.mp3`;
+  return Bun.file(join(dir, file)).exists();
+}
+
 /** text-to-video → <deck>/assets/generated/<key>.mp4 + <key>.jpg poster (Kubeez thumbnail) */
-export async function generateVideo(deckDir: string, v: VideoGenerateSpec, client = new KubeezClient()): Promise<{ path: string; poster: string }> {
+export async function generateVideo(
+  deckDir: string,
+  v: VideoGenerateSpec,
+  lazyClient: () => KubeezClient = () => new KubeezClient(),
+): Promise<{ path: string; poster: string }> {
   const dir = generatedDir(deckDir);
   const key = videoKey(v);
   const path = join(dir, `${key}.mp4`);
   const poster = join(dir, `${key}.jpg`);
   if ((await Bun.file(path).exists()) && (await Bun.file(poster).exists())) return { path, poster };
+  const client = lazyClient(); // cache miss: only now is a key required
   const model = v.model ?? env.kubeezVideoModel;
   const job = await client.generateMedia({
     prompt: v.prompt,
@@ -44,10 +56,11 @@ export async function generateVideo(deckDir: string, v: VideoGenerateSpec, clien
 }
 
 /** text-to-music → <deck>/assets/generated/<key>.mp3 */
-export async function generateMusic(deckDir: string, m: MusicGenerateSpec, client = new KubeezClient()): Promise<string> {
+export async function generateMusic(deckDir: string, m: MusicGenerateSpec, lazyClient: () => KubeezClient = () => new KubeezClient()): Promise<string> {
   const dir = generatedDir(deckDir);
   const path = join(dir, `${musicKey(m)}.mp3`);
   if (await Bun.file(path).exists()) return path;
+  const client = lazyClient(); // cache miss: only now is a key required
   const model = m.model ?? env.kubeezMusicModel;
   const job = await client.generateMusic({ prompt: m.prompt, instrumental: m.instrumental ?? true, model });
   const done = await client.waitMusic(job.generation_id);

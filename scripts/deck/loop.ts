@@ -20,6 +20,6 @@ await main(async () => {
   console.log(`  ${r.ok ? 1 : 2}. Read ${r.artifacts.contact ? rel(r.artifacts.contact) : "(no render)"} — whole deck at a glance`);
   console.log(`  ${r.ok ? 2 : 3}. Read suspicious slides at full size: ${rel(p.slidesPng)}/slide-NN.png`);
   console.log(`  ${r.ok ? 3 : 4}. Proofread copy: ${rel(r.artifacts.outline)}`);
-  console.log(`  then: fresh-eyes review (.claude/agents/deck-reviewer.md) → bin/deck export ${p.rel}`);
+  console.log(`  then: fresh-eyes review (.claude/agents/deck-reviewer.md) → bin/deck export presentations/${p.rel}`);
   return r.ok ? 0 : 1;
 });

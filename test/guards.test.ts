@@ -52,3 +52,18 @@ test("net leverage (finance) is not slop", async () => {
   };
   expect(content(scene).filter((f) => f.rule === "slop")).toEqual([]);
 });
+
+test("cached generated media never needs a Kubeez key (fresh clones build offline)", async () => {
+  const { generateImage, generatedPath } = await import("@/assets/kubeez/generate");
+  const { mkdir, rm } = await import("node:fs/promises");
+  const dir = `${import.meta.dir}/../tmp/cache-test`;
+  const spec = { prompt: "cached photo", aspect: "16:9" as const };
+  const path = generatedPath(dir, spec);
+  await mkdir(`${dir}/assets/generated`, { recursive: true });
+  await Bun.write(path, "x");
+  const boom = () => {
+    throw new Error("client must not be constructed on a cache hit");
+  };
+  expect(await generateImage(dir, spec, boom)).toBe(path);
+  await rm(dir, { recursive: true, force: true });
+});

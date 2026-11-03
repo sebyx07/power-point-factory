@@ -3,7 +3,7 @@ import sharp from "sharp";
 import { AssetError } from "@/core/errors";
 import type { MediaEl } from "@/core/types";
 import { env } from "@/env";
-import { generateMusic, generateVideo } from "./kubeez/media";
+import { generateMusic, generateVideo, isCached } from "./kubeez/media";
 import { placeholderPng } from "./placeholder";
 import type { ResolveCtx } from "./resolve";
 
@@ -26,7 +26,7 @@ export async function resolveMedia(el: MediaEl, slide: number, ctx: ResolveCtx):
     const poster = s.poster ? (isAbsolute(s.poster) ? s.poster : join(ctx.deckDir, s.poster)) : undefined;
     return { ...el, resolved: { path: p, poster: await posterFrom(poster, el.alt), placeholder: false, origin: s.file } };
   }
-  if (!env.kubeezApiKey) {
+  if (!env.kubeezApiKey && !(await isCached(ctx.deckDir, s))) {
     if (env.missingImage === "error") throw new AssetError(`${el.media} needs generating but KUBEEZ_API_KEY is unset`);
     const label = "generateVideo" in s ? s.generateVideo.prompt : s.generateMusic.prompt;
     return {

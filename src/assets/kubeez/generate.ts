@@ -15,9 +15,10 @@ export function generationKey(g: GenerateSpec): string {
 export const generatedPath = (deckDir: string, g: GenerateSpec) => join(generatedDir(deckDir), `${generationKey(g)}.${g.removeBackground ? "png" : "jpg"}`);
 
 /** Generate (or reuse) a slide image. Lands in <deck>/assets/generated — commit it. */
-export async function generateImage(deckDir: string, g: GenerateSpec, client = new KubeezClient()): Promise<string> {
+export async function generateImage(deckDir: string, g: GenerateSpec, lazyClient: () => KubeezClient = () => new KubeezClient()): Promise<string> {
   const out = generatedPath(deckDir, g);
   if (await Bun.file(out).exists()) return out;
+  const client = lazyClient(); // cache miss: only now is a key required
   const model = g.model ?? env.kubeezImageModel;
   const aspect = g.aspect ?? "16:9";
   const job = await client.generateMedia({
