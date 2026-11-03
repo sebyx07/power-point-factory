@@ -13,7 +13,6 @@ export interface SectionProps {
 
 export const section = defineLayout<SectionProps>({
   name: "section",
-  chrome: false,
   background: (ctx) => ctx.theme.colors.dark,
   render: (p, ctx) => {
     const t = ctx.theme;

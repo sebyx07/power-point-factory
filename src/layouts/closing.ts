@@ -14,7 +14,6 @@ export interface ClosingProps {
 
 export const closing = defineLayout<ClosingProps>({
   name: "closing",
-  chrome: false,
   background: (ctx) => ctx.theme.colors.dark,
   render: (p, ctx) => {
     const t = ctx.theme;
@@ -22,7 +21,11 @@ export const closing = defineLayout<ClosingProps>({
     const els: El[] = [
       ...logo(ctx, { x: mx, y: 0.6, w: 2.2, h: 0.5 }, true),
       rect("mark", { x: mx, y: 2.25, w: 0.6, h: 0.07 }, t.colors.accent),
-      enter(t, text(t, "title", { x: mx, y: 2.55, w: 10, h: 1.4 }, p.title ?? "Thank you", { role: "title", size: t.type.hero, onDark: true }), 1),
+      enter(
+        t,
+        text(t, "title", { x: mx, y: 2.55, w: 10, h: 1.4 }, p.title ?? "Questions and discussion", { role: "title", size: t.type.hero, onDark: true }),
+        1,
+      ),
     ];
     if (p.message)
       els.push(enter(t, text(t, "message", { x: mx, y: 4.05, w: 9, h: 1.0 }, p.message, { role: "subtitle", onDark: true, size: t.type.subtitle + 2 }), 2));

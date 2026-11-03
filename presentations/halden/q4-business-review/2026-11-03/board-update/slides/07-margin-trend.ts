@@ -15,7 +15,7 @@ export default slide({
     min: 0.1,
     max: 0.15,
   },
-  insights: ["Q1: list-price reset, **+0.8 pts**", "Q2–Q3: 41 routes merged, **+1.3 pts**", "Q4: shift planning tool live, **+0.5 pts**"],
+  insights: ["**Q1**: list-price reset", "**Q2–Q3**: 41 routes merged", "**Q4**: shift-planning tool live", "Net **+2.6 pts** year on year; bridge on slide 6"],
   insightsTitle: "What moved it",
   source: "Halden finance",
   notes: "Plan line is the February budget. We crossed it in Q2 and the gap kept widening.",

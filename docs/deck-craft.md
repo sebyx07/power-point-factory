@@ -6,7 +6,7 @@ Sources: Minto pyramid / consulting practice, Duarte (Glance Test), Storytelling
 
 - **Answer first.** Slide 2 (or 3 after the agenda) is the executive summary: the conclusion plus 3–5 supporting claims → `summary` layout.
 - **SCR opening:** Situation → Complication → Resolution. Then the pyramid: each section proves one summary row.
-- **Action titles:** a full sentence with the takeaway, ≤ 15 words, ≤ 2 lines. **Titles test:** read only the titles (`out/…/outline.md`) — they must tell the whole argument.
+- **Action titles:** a full sentence with the takeaway, ≤ 15 words, ≤ 2 lines. **Titles test:** read only the titles (`out/…/<deck>-outline.md`) — they must tell the whole argument.
 - **Ghost deck first:** write all titles + exhibit type before any slide.
 - **One message per slide**, clear in 3 seconds (Glance Test).
 - **Main body ≤ 15 slides** _(conv.)_; detail goes to an appendix after a `section` divider; cite as "see slide 18".

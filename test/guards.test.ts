@@ -67,3 +67,30 @@ test("cached generated media never needs a Kubeez key (fresh clones build offlin
   expect(await generateImage(dir, spec, boom)).toBe(path);
   await rm(dir, { recursive: true, force: true });
 });
+
+test("normalizePdf is length-preserving and erases run-specific stamps", async () => {
+  const { normalizePdf } = await import("@/qa/pdf-normalize");
+  const mk = (t: string, id: string) =>
+    new TextEncoder().encode(
+      `<xmp:CreateDate>2026-11-03T${t}-05:00</xmp:CreateDate>/CreationDate(D:20261103${t.replace(/:/g, "")}-05'00')/ID [ <${id}>\n<${id}> ]\n/DocChecksum /${id}\n`,
+    );
+  const at = new Date("2026-11-03T00:00:00Z");
+  const a = normalizePdf(mk("08:28:22", "A".repeat(32)), at);
+  const b = normalizePdf(mk("09:41:07", "B".repeat(32)), at);
+  expect(a.length).toBe(mk("08:28:22", "A".repeat(32)).length);
+  expect(Buffer.from(a).equals(Buffer.from(b))).toBe(true);
+});
+
+test("table overflow: a wrapping cell that pushes the table into the footer is an error", async () => {
+  const { tables } = await import("@/qa/checks/tables");
+  const { table } = await import("@/core/el");
+  await preloadFonts(["Arial"]);
+  const long = "A very long description that will certainly wrap across several lines in a narrow column";
+  const el = table(themes.cobalt, "t", { x: 0.7, y: 2.2, w: 6, h: 0 }, { header: ["Item", "Note"], rows: Array.from({ length: 8 }, () => ["Row", long]) });
+  const scene: Scene = {
+    title: "x",
+    size: { w: 13.333, h: 7.5 },
+    slides: [{ index: 1, layout: "table", background: "#FFFFFF", transition: { type: "none" }, build: null, morph: false, elements: [el] }],
+  };
+  expect(tables(scene).map((f) => f.rule)).toContain("table-overflow");
+});

@@ -3,6 +3,7 @@ import { defineLayout } from "@/core/deck";
 import { hline, rect, rounded, text, vline } from "@/core/el";
 import { columns, contains, inset, intersect } from "@/core/geometry";
 import type { Box, El } from "@/core/types";
+import { textWidthPt } from "@/text/measure";
 import { contentBox, enter, footer, type Heading, titleBlock } from "./parts";
 
 export interface MatrixItem {
@@ -24,26 +25,48 @@ export interface MatrixProps extends Heading {
   target?: Quadrant;
   items: MatrixItem[];
   insights?: string[];
+  /** what bubble size means, e.g. "Bubble size = 3-year profit impact" */
+  sizeLegend?: string;
 }
 
-const LABEL = { w: 2.1, h: 0.28 };
+const LABEL_H = 0.28;
 
-/** first label slot (preferred side, other side, then nudged up/down) that collides with nothing placed so far */
-function placeLabel(cx: number, cy: number, d: number, preferRight: boolean, taken: Box[], grid: Box): { box: Box; right: boolean } {
-  const sides = preferRight ? [true, false] : [false, true];
-  for (const dy of [0, -0.32, 0.32, -0.62, 0.62]) {
-    for (const right of sides) {
-      const box = { x: right ? cx + d / 2 + 0.08 : cx - d / 2 - 0.08 - LABEL.w, y: cy - LABEL.h / 2 + dy, w: LABEL.w, h: LABEL.h };
-      if (contains(grid, box) && !taken.some((b) => intersect(b, box))) return { box, right };
+/** first slot hugging the bubble (preferred side, other side, above, below, small nudges) that collides with nothing */
+function placeLabel(
+  cx: number,
+  cy: number,
+  d: number,
+  w: number,
+  preferRight: boolean,
+  taken: Box[],
+  grid: Box,
+): { box: Box; align: "left" | "right" | "center" } {
+  const r = { x: cx + d / 2 + 0.06, y: cy - LABEL_H / 2, w, h: LABEL_H };
+  const l = { x: cx - d / 2 - 0.06 - w, y: cy - LABEL_H / 2, w, h: LABEL_H };
+  const up = { x: cx - w / 2, y: cy - d / 2 - LABEL_H - 0.02, w, h: LABEL_H };
+  const down = { x: cx - w / 2, y: cy + d / 2 + 0.02, w, h: LABEL_H };
+  const sides: [Box, "left" | "right" | "center"][] = preferRight
+    ? [
+        [r, "left"],
+        [l, "right"],
+      ]
+    : [
+        [l, "right"],
+        [r, "left"],
+      ];
+  const candidates: [Box, "left" | "right" | "center"][] = [...sides, [up, "center"], [down, "center"]];
+  for (const dy of [0, -0.14, 0.14]) {
+    for (const [b, align] of candidates) {
+      const box = { ...b, y: b.y + dy };
+      if (contains(grid, box) && !taken.some((x) => intersect(x, box))) return { box, align };
     }
   }
-  return { box: { x: cx + d / 2 + 0.08, y: cy - LABEL.h / 2, w: LABEL.w, h: LABEL.h }, right: true };
+  return { box: r, align: "left" };
 }
 
 /** 2×2 prioritization / positioning matrix with plotted bubbles. */
 export const matrix = defineLayout<MatrixProps>({
   name: "matrix",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const { els, contentTop } = titleBlock(ctx, p);
@@ -67,8 +90,10 @@ export const matrix = defineLayout<MatrixProps>({
       // top row names sit at the top edge, bottom row at the bottom edge — away from the centre where items cluster
       if (name)
         out.push(
-          text(t, `qname-${q}`, { x: b.x + 0.15, y: cy ? b.y + b.h - 0.38 : b.y + 0.12, w: b.w - 0.3, h: 0.26 }, name, {
-            role: "eyebrow",
+          // plain bold label, no tracked caps: reads calmer and copies cleanly out of the PDF
+          text(t, `qname-${q}`, { x: b.x + 0.18, y: cy ? b.y + b.h - 0.42 : b.y + 0.14, w: b.w - 0.36, h: 0.28 }, name, {
+            role: "label",
+            size: t.type.caption + 1,
             color: p.target === q ? t.colors.accent : t.colors.muted,
             align: cx ? "right" : "left",
           }),
@@ -92,24 +117,29 @@ export const matrix = defineLayout<MatrixProps>({
       const dot = { x: cx - d / 2, y: cy - d / 2, w: d, h: d };
       out.push(enter(t, { ...rect(`dot-${i}`, dot, fill), shape: "ellipse" }, i + 1, "zoom"));
       taken.push(dot);
-      const label = placeLabel(cx, cy, d, it.x < 0.78, taken, g);
+      const size = t.type.caption + 1;
+      const w = textWidthPt(it.label, t.fonts.body, it.highlight ?? false, size) / 72 + 0.12;
+      const label = placeLabel(cx, cy, d, w, it.x < 0.78, taken, g);
       taken.push(label.box);
       out.push(
         enter(
           t,
           text(t, `item-${i}`, label.box, it.label, {
-            role: "label",
-            size: t.type.caption + 2,
+            size,
             minSize: 10,
-            align: label.right ? "left" : "right",
-            ...(it.highlight ? { color: t.colors.accent } : {}),
+            align: label.align,
+            bold: it.highlight ?? false,
+            color: it.highlight ? t.colors.accent : t.colors.text,
           }),
           i + 1,
         ),
       );
     });
-    if (right && p.insights)
-      out.push(enter(t, text(t, "insights", right, p.insights, { bullet: true, size: t.type.small + 1, minSize: 12 }), p.items.length + 1));
+    if (right && p.insights) {
+      // same insight card as the chart layout → one visual language across data slides
+      out.push(enter(t, rounded("insight-bg", right, t.colors.surface, t.radius), p.items.length + 1, "fade"));
+      out.push(enter(t, text(t, "insights", inset(right, 0.32), p.insights, { bullet: true, size: t.type.small + 1, minSize: 12 }), p.items.length + 1));
+    }
     return [...out, ...footer(ctx)];
   },
 });

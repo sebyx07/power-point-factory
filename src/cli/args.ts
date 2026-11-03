@@ -11,7 +11,10 @@ export function parseArgs(argv = Bun.argv.slice(2)): Args {
       out._.push(a);
       continue;
     }
-    const [k, v] = a.slice(2).split("=", 2) as [string, string | undefined];
+    const body = a.slice(2);
+    const eq = body.indexOf("=");
+    const k = eq < 0 ? body : body.slice(0, eq);
+    const v = eq < 0 ? undefined : body.slice(eq + 1);
     const next = argv[i + 1];
     if (v !== undefined) out.flags[k] = v;
     else if (next && !next.startsWith("--") && ["theme", "date", "title", "model", "aspect", "out", "type"].includes(k)) {

@@ -7,7 +7,7 @@ import { DeckSpecError } from "@/core/errors";
 
 await main(async () => {
   for (const p of targets(parseArgs()._)) {
-    if (!(await Bun.file(`${p.slidesPng}/slide-01.png`).exists())) throw new DeckSpecError(`${p.rel}: no rendered slides`, "run bin/deck qa first");
+    if (!(await Bun.file(p.slidePng(1)).exists())) throw new DeckSpecError(`${p.rel}: no rendered slides`, "run bin/deck qa first");
     await rm(p.baseline, { recursive: true, force: true });
     await cp(p.slidesPng, p.baseline, { recursive: true });
     console.log(`✔ baseline approved: ${p.baseline}`);

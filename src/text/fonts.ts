@@ -19,6 +19,7 @@ const cache = new Map<string, opentype.Font>();
 const key = (face: string, bold: boolean) => `${face}|${bold ? "b" : "r"}`;
 
 function locate(twin: string, bold: boolean): string {
+  if (!Bun.which("fc-match")) throw new FontError("fontconfig (fc-match) not installed", "apt install fontconfig · brew install fontconfig — then bin/doctor");
   const r = Bun.spawnSync(["fc-match", "-f", "%{family}\n%{file}", `${twin}:${bold ? "bold" : "regular"}`]);
   const [family = "", file = ""] = r.stdout.toString().split("\n");
   if (r.exitCode !== 0 || !family.split(",").includes(twin)) {

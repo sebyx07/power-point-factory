@@ -4,6 +4,8 @@ on:
   pull_request:
 jobs:
   check:
+    # the required check the maintainer merges on (.dz/maintainer/maintainer.yml)
+    name: CI OK
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,4 +22,9 @@ jobs:
       - run: bin/check
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: decks, path: "out/**/{*.pdf,contact-sheet.png,qa.md}" }
+        with:
+          name: decks
+          path: |
+            out/**/*.pdf
+            out/**/*-contact-sheet.png
+            out/**/*-qa.md

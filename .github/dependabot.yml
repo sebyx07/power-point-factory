@@ -1,0 +1,28 @@
+version: 2
+# Weekly, grouped updates. The developerz.ai maintainer agent reviews them and merges on a green
+# "CI OK" (.dz/maintainer/maintainer.yml). cooldown: a release must be 14 days old before it is
+# proposed, so broken or compromised releases are usually yanked first. Security updates skip it.
+updates:
+  - package-ecosystem: bun
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+    open-pull-requests-limit: 10
+    groups:
+      render:
+        patterns: ["pptxgenjs", "sharp", "opentype.js", "jszip", "fast-xml-parser", "pixelmatch", "lucide-static"]
+      dev-tools:
+        patterns: ["@biomejs/*", "typescript", "@types/*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+    groups:
+      github-actions:
+        patterns: ["*"]

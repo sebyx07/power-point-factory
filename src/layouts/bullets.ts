@@ -17,7 +17,6 @@ export interface BulletsProps extends Heading {
 
 export const bullets = defineLayout<BulletsProps>({
   name: "bullets",
-  chrome: true,
   render: (p, ctx) => {
     if (p.bullets.length === 0) throw new DeckSpecError("bullets: empty list", "add 2–6 bullets or use the quote/section layout");
     const t = ctx.theme;

@@ -29,7 +29,6 @@ export interface RoadmapProps extends Heading {
 /** Gantt roadmap: workstreams × periods, status-colored bars, milestones, today line. */
 export const roadmap = defineLayout<RoadmapProps>({
   name: "roadmap",
-  chrome: true,
   render: (p, ctx) => {
     if (p.rows.length < 1 || p.rows.length > 8) throw new DeckSpecError(`roadmap: ${p.rows.length} rows`, "≤ 8 workstreams per slide");
     const t = ctx.theme;
@@ -44,7 +43,7 @@ export const roadmap = defineLayout<RoadmapProps>({
       s === "done"
         ? mix(t.colors.text, t.colors.bg, 0.72)
         : s === "at-risk"
-          ? t.colors.negative
+          ? (t.colors.warning ?? t.colors.negative)
           : s === "planned"
             ? mix(t.colors.accent, t.colors.bg, 0.18)
             : t.colors.accent;
@@ -53,6 +52,18 @@ export const roadmap = defineLayout<RoadmapProps>({
       out.push(text(t, `period-${i}`, { x: xOf(i), y: area.y, w: colW, h: 0.3 }, name, { role: "eyebrow", align: "center", color: t.colors.muted }));
       if (i > 0) out.push(vline(`grid-${i}`, xOf(i), grid.y, rowH * p.rows.length, t.colors.rule, 0.5));
     });
+    // today line before the rows → drawn UNDER the bars, never through their labels; neutral ink, not alarm red
+    if (p.today !== undefined) {
+      out.push(vline("today", xOf(p.today), grid.y - 0.08, rowH * p.rows.length + 0.16, t.colors.text, 1));
+      out.push(
+        text(t, "today-label", { x: xOf(p.today) - 0.6, y: grid.y + rowH * p.rows.length + 0.1, w: 1.2, h: 0.25 }, "Today", {
+          role: "caption",
+          align: "center",
+          color: t.colors.text,
+          bold: true,
+        }),
+      );
+    }
     p.rows.forEach((r, ri) => {
       const y = grid.y + ri * rowH;
       const o = ri + 1;
@@ -66,7 +77,9 @@ export const roadmap = defineLayout<RoadmapProps>({
         }),
       );
       r.bars.forEach((b, bi) => {
-        const bx = { x: xOf(b.start) + 0.04, y: y + rowH * 0.22, w: xOf(b.end) - xOf(b.start) - 0.08, h: rowH * 0.56 };
+        // rows with milestones keep a label band on top: bars sit lower and slimmer
+        const top = r.milestones?.length ? 0.36 : 0.22;
+        const bx = { x: xOf(b.start) + 0.04, y: y + rowH * top, w: xOf(b.end) - xOf(b.start) - 0.08, h: rowH * (r.milestones?.length ? 0.5 : 0.56) };
         const fill = statusColor(b.status);
         out.push(enter(t, rounded(`bar-${ri}-${bi}`, bx, fill, Math.min(0.06, bx.h / 2)), o, "wipe"));
         if (b.label) {
@@ -90,22 +103,27 @@ export const roadmap = defineLayout<RoadmapProps>({
       });
       (r.milestones ?? []).forEach((m, mi) => {
         const d = 0.2;
-        const cx = xOf(m.at);
-        out.push(enter(t, { ...rect(`ms-${ri}-${mi}`, { x: cx - d / 2, y: y + rowH / 2 - d / 2, w: d, h: d }, t.colors.text), shape: "ellipse" }, o, "zoom"));
+        // clamp inside the grid so an end-of-range milestone never pokes past the edge
+        const cx = Math.min(xOf(m.at), grid.x + grid.w - d / 2 - 0.02);
+        const cy = y + rowH * 0.61;
+        out.push(enter(t, { ...rect(`ms-${ri}-${mi}`, { x: cx - d / 2, y: cy - d / 2, w: d, h: d }, t.colors.text), shape: "ellipse" }, o, "zoom"));
+        const lw = 1.1;
+        out.push(
+          enter(
+            t,
+            text(t, `ms-label-${ri}-${mi}`, { x: Math.min(cx - lw / 2, grid.x + grid.w - lw), y: y + 0.03, w: lw, h: rowH * 0.3 }, m.label, {
+              role: "caption",
+              bold: true,
+              align: "center",
+              size: t.type.caption - 1,
+              minSize: 8,
+            }),
+            o,
+          ),
+        );
       });
     });
     out.push(hline("row-end", area.x, grid.y + rowH * p.rows.length, area.w, t.colors.rule, 0.5));
-    if (p.today !== undefined) {
-      out.push(vline("today", xOf(p.today), grid.y - 0.08, rowH * p.rows.length + 0.16, t.colors.negative, 1.25));
-      out.push(
-        text(t, "today-label", { x: xOf(p.today) - 0.6, y: grid.y + rowH * p.rows.length + 0.1, w: 1.2, h: 0.25 }, "Today", {
-          role: "caption",
-          align: "center",
-          color: t.colors.negative,
-          bold: true,
-        }),
-      );
-    }
     return [...out, ...footer(ctx)];
   },
 });

@@ -19,7 +19,6 @@ export interface TimelineProps extends Heading {
 
 export const timeline = defineLayout<TimelineProps>({
   name: "timeline",
-  chrome: true,
   render: (p, ctx) => {
     const n = p.milestones.length;
     if (n < 2 || n > 6) throw new DeckSpecError(`timeline: ${n} milestones`, "use 2–6 milestones");
@@ -39,7 +38,7 @@ export const timeline = defineLayout<TimelineProps>({
         enter(
           t,
           {
-            ...rect(`dot-${i}`, { x: c.x, y: lineY - d / 2, w: d, h: d }, m.done === false ? t.colors.bg : t.colors.accent),
+            ...rect(`dot-${i}`, { x: c.x, y: lineY - d / 2, w: d, h: d }, m.done ? t.colors.accent : t.colors.bg),
             shape: "ellipse",
             line: { color: t.colors.accent, width: 2 },
           },

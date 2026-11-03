@@ -1,35 +1,36 @@
-// bin/deck watch [deck] [--render] — rebuild + static QA on every save (add --render for screenshots).
+// bin/deck watch [deck] [--render] — rebuild + QA on every save of the deck, its brand, or src/.
+// Each rebuild runs in a fresh subprocess: Bun caches imported modules, so in-process reloads go stale.
 import { watch } from "node:fs";
+import { join } from "node:path";
 import { parseArgs } from "@/cli/args";
 import { log, main } from "@/cli/main";
 import { targets } from "@/cli/targets";
-import { DeckError } from "@/core/errors";
-import { ROOT } from "@/pipeline/paths";
-import { qaDeck } from "@/pipeline/qa";
-import { reportConsole } from "@/qa/report";
+import { PRESENTATIONS, ROOT } from "@/pipeline/paths";
 
 await main(async () => {
   const a = parseArgs();
   const [p] = targets(a._);
   if (!p) return 1;
   let timer: Timer | undefined;
-  const once = async () => {
-    try {
-      const r = await qaDeck(p, { fresh: true, noRender: a.flags.render !== true, log });
-      console.log(`\n${new Date().toLocaleTimeString()}  ${reportConsole(r)}`);
-    } catch (e) {
-      console.error(e instanceof DeckError ? `✖ ${e.message}` : e);
-    }
+  let running: ReturnType<typeof Bun.spawn> | undefined;
+  const once = () => {
+    running?.kill();
+    console.log(`\n${new Date().toLocaleTimeString()}`);
+    running = Bun.spawn(["bun", join(ROOT, "scripts/deck/qa.ts"), p.dir, ...(a.flags.render === true ? [] : ["--fast"])], {
+      cwd: ROOT,
+      stdout: "inherit",
+      stderr: "inherit",
+    });
   };
-  await once();
+  once();
   const onChange = (_: string, file: string | null) => {
-    if (file?.includes("build")) return;
+    if (file && /(^|\/)(out|node_modules|\.git)\//.test(file)) return;
     clearTimeout(timer);
     timer = setTimeout(once, 250);
   };
-  watch(p.dir, { recursive: true }, onChange);
-  watch(`${ROOT}/src`, { recursive: true }, onChange);
-  log(`watching ${p.rel} and src/ — ctrl-c to stop`);
+  const company = join(PRESENTATIONS, p.rel.split("/")[0] ?? "");
+  for (const dir of [company, join(ROOT, "src")]) watch(dir, { recursive: true }, onChange);
+  log(`watching ${p.rel}, its company brand/layouts, and src/ — ctrl-c to stop`);
   await new Promise(() => {});
   return 0;
 });

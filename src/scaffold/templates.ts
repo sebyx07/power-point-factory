@@ -2,33 +2,37 @@
 
 const cap = (s: string) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
+/** user-typed strings go through JSON.stringify — a quote in a title can't break the generated TS */
+const q = (v: string) => JSON.stringify(v);
+
 export function brandFile(company: string, theme: string): string {
   return `import { join } from "node:path";
 import { extendTheme } from "@/deck";
 
 /** ${cap(company)} brand tokens — every presentation under presentations/${company}/ imports this. Prose rules: BRAND.md */
-export const brand = extendTheme("${theme}", {
-  name: "${company}",
-  // colors: { accent: "#0B7A75", chart: ["#0B7A75", "#A9C2BF", "#0E1A2B", "#D3DCE6"] },
+export const brand = extendTheme(${q(theme)}, {
+  name: ${q(company)},
+  // colors: { accent: "#0B7A75", warning: "#A35A0A", chart: ["#0B7A75", "#A9C2BF", "#0E1A2B", "#D3DCE6"] },
   // fonts: { display: "Georgia", body: "Calibri" },   // Office-safe faces only (src/text/fonts.ts)
   // logo: { onLight: join(import.meta.dir, "brand/logo.svg"), onDark: join(import.meta.dir, "brand/logo-white.svg") },
 });
 void join;
 
-export const company = "${cap(company)}";
+export const company = ${q(cap(company))};
 `;
 }
 
-export function deckFile(_company: string, title: string): string {
+export function deckFile(title: string, date: string): string {
+  const human = new Date(`${date}T12:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
   return `import { defineDeck } from "@/deck";
 import { brand, company } from "../../../brand";
 
-/** Slides live in ./slides/NN-name.ts — filename order is slide order. */
+/** Slides live in ./slides/NN-name.ts — filename order is slide order. Motion: "subtle" (default) · "build" · "keynote" · "none". */
 export default defineDeck({
-  title: "${title}",
+  title: ${q(title)},
   company,
   author: "",
-  date: "${new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}",
+  date: ${q(human)},
   classification: "Confidential",
   theme: brand,
   slides: [],
@@ -36,20 +40,25 @@ export default defineDeck({
 `;
 }
 
+/** a minimal answer-first skeleton: cover → summary → decisions → closing */
 export function slideFiles(title: string): [string, string][] {
   const head = `import { slide } from "@/slide";\n\n`;
   return [
     [
       "01-cover.ts",
-      `${head}export default slide({\n  layout: "cover",\n  title: "${title}",\n  subtitle: "One sentence: what the audience will decide or learn.",\n});\n`,
+      `${head}export default slide({\n  layout: "cover",\n  title: ${q(title)},\n  subtitle: "One sentence: what the audience will decide or learn.",\n});\n`,
     ],
     [
       "02-summary.ts",
-      `${head}export default slide({\n  layout: "bullets",\n  eyebrow: "Summary",\n  title: "State the single conclusion as a full sentence",\n  bullets: ["First supporting point with a **number**", "Second supporting point", "Third supporting point"],\n  notes: "What you say while this slide is up.",\n});\n`,
+      `${head}export default slide({\n  layout: "summary",\n  eyebrow: "Executive summary",\n  title: "State the single conclusion as a full sentence",\n  rows: [\n    { lead: "First claim, with a number", support: "Where it is proven (slide N)" },\n    { lead: "Second claim", support: "Evidence" },\n    { lead: "The ask", support: "What you need from the room" },\n  ],\n  notes: "What you say while this slide is up.",\n});\n`,
+    ],
+    [
+      "90-next-steps.ts",
+      `${head}export default slide({\n  layout: "nextSteps",\n  eyebrow: "Decision",\n  title: "One decision today and the actions that follow",\n  ask: "The single ask, as a sentence.",\n  actions: [{ action: "First action", owner: "Name", due: "Date" }],\n  notes: "Ask for the decision explicitly.",\n});\n`,
     ],
     [
       "99-closing.ts",
-      `${head}export default slide({\n  layout: "closing",\n  title: "Thank you",\n  message: "The one next step you want from the room.",\n});\n`,
+      `${head}export default slide({\n  layout: "closing",\n  title: "Questions and discussion",\n  message: "The one next step you want from the room.",\n});\n`,
     ],
   ];
 }
@@ -82,6 +91,7 @@ export function brandMd(company: string): string {
 |---|---|---|
 | Accent | | the one highlight |
 | Ink | | text |
+| Warning | | at-risk / decreases (theme \`colors.warning\`) |
 
 ## Type
 - Office-safe faces only (Calibri, Arial, Georgia, Cambria…). Brand font → nearest safe twin, note it here.

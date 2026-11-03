@@ -6,10 +6,22 @@ import { contrastCheck } from "./contrast";
 import { geometry } from "./geometry";
 import { images } from "./images";
 import { links } from "./links";
+import { references } from "./references";
 import { story } from "./story";
+import { tables } from "./tables";
 import { typography } from "./typography";
 
 /** All static checks on the scene graph — fast, no rendering needed. */
 export function staticChecks(scene: Scene, theme: Theme): Finding[] {
-  return [...geometry(scene, theme), ...typography(scene), ...contrastCheck(scene), ...content(scene), ...images(scene), ...links(scene), ...story(scene)];
+  return [
+    ...geometry(scene, theme),
+    ...typography(scene),
+    ...contrastCheck(scene),
+    ...content(scene),
+    ...images(scene),
+    ...links(scene),
+    ...references(scene),
+    ...tables(scene),
+    ...story(scene),
+  ];
 }

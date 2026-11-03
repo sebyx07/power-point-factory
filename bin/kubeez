@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # bin/kubeez <verb> — Kubeez API from the shell (scripts/kubeez/<verb>.ts)
 set -euo pipefail
+export DECK_CWD="${DECK_CWD:-$PWD}"
 cd "$(dirname "$0")/.."
 verb="${1:-help}"; shift || true
 if [[ "$verb" == "help" || ! -f "scripts/kubeez/$verb.ts" ]]; then

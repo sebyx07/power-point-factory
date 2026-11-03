@@ -23,7 +23,6 @@ export interface WaterfallProps extends Heading {
 /** Bridge chart drawn as native shapes: exact geometry, labels on every bar, editable in PowerPoint. */
 export const waterfall = defineLayout<WaterfallProps>({
   name: "waterfall",
-  chrome: true,
   render: (p, ctx) => {
     if (p.steps.length < 3 || p.steps.length > 12) throw new DeckSpecError(`waterfall: ${p.steps.length} steps`, "use 3–12 steps (start, deltas…, end)");
     const t = ctx.theme;

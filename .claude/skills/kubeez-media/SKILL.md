@@ -1,5 +1,4 @@
 ---
-
 name: kubeez-media
 description: Use when a slide needs a generated image, video or music bed (Kubeez). Covers prompts that read as real photography, model choice, cost, caching, and transparent cut-outs.
 ---

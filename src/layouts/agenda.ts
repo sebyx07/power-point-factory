@@ -15,7 +15,6 @@ export interface AgendaProps {
 
 export const agenda = defineLayout<AgendaProps>({
   name: "agenda",
-  chrome: true,
   render: (p, ctx) => {
     if (p.items.length < 2 || p.items.length > 7) throw new DeckSpecError(`agenda: ${p.items.length} items`, "use 2–7 items");
     const t = ctx.theme;

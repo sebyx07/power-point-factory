@@ -50,6 +50,8 @@ export interface Measured {
   heightPt: number;
   /** widest single word vs available width — >1 means a word can't fit at all */
   widestWordRatio: number;
+  /** words on the final line (1 = a widow) */
+  lastLineWords: number;
 }
 
 export function measure(el: TextEl, size = el.size): Measured {
@@ -59,9 +61,11 @@ export function measure(el: TextEl, size = el.size): Measured {
   let lines = 0;
   let heightPt = 0;
   let widest = 0;
+  let lastWords = 0;
   el.paragraphs.forEach((p, i) => {
     const avail = widthPt - (p.bullet ? BULLET_INDENT_PT : 0);
     let n = 1;
+    lastWords = 0;
     let x = 0;
     for (const t of tokens(p, el.bold ?? false, el.upper ?? false)) {
       const w = textWidthPt(t.text, el.font, t.bold, size, track);
@@ -73,12 +77,16 @@ export function measure(el: TextEl, size = el.size): Measured {
       if (x > 0 && x + w > avail) {
         n++;
         x = w;
-      } else x += w;
+        lastWords = 1;
+      } else {
+        x += w;
+        lastWords++;
+      }
     }
     lines += n;
     heightPt += n * lh + (i < el.paragraphs.length - 1 ? (p.spaceAfter ?? 0) : 0);
   });
-  return { lines, heightPt, widestWordRatio: widest };
+  return { lines, heightPt, widestWordRatio: widest, lastLineWords: lastWords };
 }
 
 export function fits(el: TextEl, size = el.size): boolean {

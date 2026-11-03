@@ -1,5 +1,4 @@
 ---
-
 name: add-layout
 description: Use when a slide needs a structure no existing layout provides (pricing tiers, org chart, funnel, risk heat map…). Builds a reusable, typed, QA-covered layout — company-scoped or built-in.
 ---
@@ -17,7 +16,6 @@ export interface PricingProps extends parts.Heading {
 }
 export const pricing = defineLayout<PricingProps>({
   name: "pricing",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const { els, contentTop } = parts.titleBlock(ctx, p);

@@ -1,20 +1,22 @@
 # PowerPoint Factory
 
+[![CI](https://github.com/sebyx07/power-point-factory/actions/workflows/ci.yml/badge.svg)](https://github.com/sebyx07/power-point-factory/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![AI-maintained by developerz.ai](https://img.shields.io/badge/AI--maintained-developerz.ai-0A6E66.svg)](.dz/README.md)
+
 **Corporate-ready PowerPoint presentations as code — written by AI, proven by QA, reviewed with fresh eyes.**
 
 Developers (and their Claude agents) describe slides as small typed recipes. The factory turns them into **native, fully editable `.pptx`** (real shapes, charts, tables, speaker notes, slide titles, transitions and animations), renders every slide to PNG + PDF, and runs ~40 automatic checks — text overflow, contrast, overlaps, slop words, chart rules, broken links — before anyone sees it. AI images, video and music come from [Kubeez](https://kubeez.com).
 
 From the everyday status update to the launch keynote: same recipes, different motion profile.
 
-![The sample board deck — all 21 slides](out/halden/q4-business-review/2026-11-03/board-update/contact-sheet.png)
+![The sample board deck — all 20 slides](out/halden/q4-business-review/2026-11-03/board-update/board-update-contact-sheet.png)
 
-> **See the result without building anything:** [`board-update.pptx`](out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx) · [`board-update.pdf`](out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf) · [slide PNGs](out/halden/q4-business-review/2026-11-03/board-update/slides/) — a 21-slide Q4 board review for _Halden Logistics_ (a fictional company), with real Kubeez photography.
+> **See the result without building anything:** [`board-update.pptx`](out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx) · [`board-update.pdf`](out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf) · [slide PNGs](out/halden/q4-business-review/2026-11-03/board-update/slides/) — a 20-slide Q4 board review for _Halden Logistics_ (a fictional company), with real Kubeez photography.
 
 |                                                                                |                                                                                |                                                                                |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| ![](out/halden/q4-business-review/2026-11-03/board-update/slides/slide-01.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/slide-06.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/slide-09.png) |
+| ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-01.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-06.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-08.png) |
 | Cover with generated photo + logo                                              | Waterfall bridge (native shapes)                                               | Native table, highlight + total rows                                           |
-| ![](out/halden/q4-business-review/2026-11-03/board-update/slides/slide-14.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/slide-15.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/slide-19.png) |
+| ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-13.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-14.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-18.png) |
 | 2×2 prioritization matrix                                                      | Gantt roadmap with "today" line                                                | Decisions: action · owner · date · RAG                                         |
 
 ## Quickstart
@@ -34,8 +36,8 @@ Needs [Bun](https://bun.sh) ≥ 1.4, LibreOffice (headless render), poppler (`pd
 presentations/<company>/<project>/<date>/<deck>/      out/<company>/<project>/<date>/<deck>/
   deck.ts          meta + theme                       <deck>.pptx    native, editable
   slides/01-*.ts   one slide per file (typed DSL)  →  <deck>.pdf
-  assets/          your files + Kubeez cache          slides/slide-NN.png · contact-sheet.png
-                                                      qa.md · outline.md · scene.json · export/
+  assets/          your files + Kubeez cache          slides/<deck>-NN.png · <deck>-contact-sheet.png
+                                                      <deck>-qa.md · -outline.md · -scene.json · export/
      recipe → layout → scene graph → assets → pptxgenjs → OOXML motion → LibreOffice → PNG → QA
 ```
 A slide is data:
@@ -108,4 +110,7 @@ Built for Claude Code (works with any agent that reads `AGENTS.md`):
 
 `out/` is gitignored for your decks. The **Halden sample's** `.pptx`, `.pdf` and PNGs are the one exception (whitelisted in `.gitignore`) so you can see what the factory produces. Generated Kubeez media in `presentations/**/assets/generated/` _is_ committed — it is source, and regenerating costs credits.
 
-Halden Logistics is fictional; its logo and photos were made for this repo.
+## Contributing
+Issues and PRs welcome — this repo is **AI-maintained** by [developerz.ai](https://developerz.ai): an agent triages, reviews and merges on a green `CI OK` ([`.dz/`](.dz/README.md)). See [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) · [CHANGELOG.md](CHANGELOG.md).
+
+MIT licensed. Halden Logistics is fictional; its logo and photos were made for this repo.

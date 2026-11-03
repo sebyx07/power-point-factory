@@ -6,7 +6,12 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "bun test"
+    "test": "bun test",
+    "setup": "bin/setup",
+    "check": "bin/check",
+    "doctor": "bin/doctor",
+    "deck": "bin/deck",
+    "loop": "bin/deck loop"
   },
   "dependencies": {
     "fast-xml-parser": "^5.12.0",
@@ -23,5 +28,8 @@
     "@types/opentype.js": "^1.3.10",
     "@types/pixelmatch": "^5.2.6",
     "typescript": "^7.0.2"
+  },
+  "engines": {
+    "bun": ">=1.4.4"
   }
 }

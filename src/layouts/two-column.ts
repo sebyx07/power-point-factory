@@ -19,7 +19,6 @@ export interface TwoColumnProps extends Heading {
 
 export const twoColumn = defineLayout<TwoColumnProps>({
   name: "twoColumn",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const { els, contentTop } = titleBlock(ctx, p);

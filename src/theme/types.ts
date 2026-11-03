@@ -17,6 +17,8 @@ export interface ThemeColors {
   rule: Hex;
   positive: Hex;
   negative: Hex;
+  /** at-risk / amber status (defaults to a dark amber that passes AA on light canvases) */
+  warning?: Hex;
   /** inverted canvas for cover/section/closing */
   dark: Hex;
   onDark: Hex;

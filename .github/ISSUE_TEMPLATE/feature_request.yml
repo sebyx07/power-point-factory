@@ -1,0 +1,20 @@
+name: Feature request
+description: A new layout, QA rule, theme capability, motion option or integration
+labels: [feature]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What slide or workflow can't you build today?
+      description: The presentation situation, not the solution. A sketch or screenshot of the target slide helps.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed shape (props, command, rule)
+      render: ts
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried (custom layout, `extra`, existing layout)

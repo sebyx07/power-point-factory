@@ -32,7 +32,7 @@ export function reportMarkdown(r: QaReport): string {
     "",
     "## Look at",
     `- contact sheet: \`${r.artifacts.contact ? rel(r.artifacts.contact) : "(not rendered)"}\``,
-    `- slides: \`${r.artifacts.slides[0] ? rel(r.artifacts.slides[0]).replace(/slide-\d+/, "slide-NN") : "(not rendered)"}\``,
+    `- slides: \`${r.artifacts.slides[0] ? rel(r.artifacts.slides[0]).replace(/-\d+\.png$/, "-NN.png") : "(not rendered)"}\``,
     `- outline (all copy): \`${rel(r.artifacts.outline)}\``,
     `- pptx: \`${rel(r.artifacts.pptx)}\``,
     "",

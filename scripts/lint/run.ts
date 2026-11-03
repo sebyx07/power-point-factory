@@ -1,5 +1,6 @@
 // bin/check guards step: repo-specific rules Biome can't express. Each guard is a pure fn + test.
 import { readFileSync } from "node:fs";
+import { deadLinks } from "./doc-links";
 import { declared, envReads } from "./env-in-example";
 import { MAX, offenders } from "./max-file-loc";
 import { bareErrors } from "./no-bare-error";
@@ -24,5 +25,12 @@ fail(
   "declare it in .env.example with a one-line comment",
 );
 fail("no-bare-error", bareErrors(files), "throw a DeckError subclass from src/core/errors.ts with a hint");
-if (!bad) console.log("✔ guards: max-file-loc, env-in-example, no-bare-error");
+const docs = [
+  ...new Bun.Glob("{*.md,llms.txt,docs/**/*.md,.claude/**/*.md,.dz/**/*.md,presentations/*/BRAND.md,presentations/*/brand/*.md}").scanSync({
+    cwd: ".",
+    dot: true,
+  }),
+];
+fail("doc-links", deadLinks(docs), "fix or remove the link (relative to the file it is in)");
+if (!bad) console.log("✔ guards: max-file-loc, env-in-example, no-bare-error, doc-links");
 process.exit(bad ? 1 : 0);

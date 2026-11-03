@@ -17,7 +17,6 @@ export interface VideoProps extends Partial<Heading> {
 /** Embedded video (file or Kubeez text-to-video). Poster frame renders in PDF/screenshots. */
 export const video = defineLayout<VideoProps>({
   name: "video",
-  chrome: true,
   background: (ctx, p) => (p.full ? ctx.theme.colors.dark : ctx.theme.colors.bg),
   render: (p, ctx) => {
     const t = ctx.theme;

@@ -21,7 +21,6 @@ export interface NextStepsProps extends Heading {
 /** The real closing slide: action · owner · date · status. Replaces "Thank you! Questions?". */
 export const nextSteps = defineLayout<NextStepsProps>({
   name: "nextSteps",
-  chrome: true,
   render: (p, ctx) => {
     if (p.actions.length < 1 || p.actions.length > 8) throw new DeckSpecError(`nextSteps: ${p.actions.length} actions`, "1–8 actions");
     const missing = p.actions.find((a) => !a.owner.trim() || !a.due.trim());

@@ -11,6 +11,36 @@ import type {
   UploadResponse,
 } from "./types";
 
+const MAX_RETRIES = 4;
+const backoff = (attempt: number) => Math.min(1000 * 2 ** attempt, 15_000);
+
+/** error bodies may be HTML (proxy 502) — never let JSON.parse throw a raw SyntaxError */
+function parseJson(text: string): unknown {
+  if (!text) return null;
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+const HINTS: Record<number, string> = {
+  401: "check KUBEEZ_API_KEY in .env (sk_live_…)",
+  403: "the key lacks a scope — needs generate:media, generate:music, read:generations",
+  404: "unknown generation id or path",
+  429: "rate limited — retried, still limited; wait and re-run",
+};
+
+function toError(method: string, path: string, status: number, json: unknown, text: string): KubeezError {
+  const e = (json ?? {}) as { error?: string; message?: string; hint?: string; detail?: unknown };
+  const msg = e.message ?? e.error ?? (e.detail ? JSON.stringify(e.detail) : text.slice(0, 300) || "(empty body)");
+  const hint =
+    status === 400 && /credit/i.test(msg)
+      ? "top up credits at https://kubeez.com/billing"
+      : (HINTS[status] ?? e.hint ?? (status >= 500 ? "Kubeez server error — re-run; pending jobs resume" : undefined));
+  return new KubeezError(`Kubeez ${method} ${path} → ${status}: ${msg}`, status, hint);
+}
+
 /** ALL Kubeez HTTP goes through here. Auth: X-API-Key (sk_live_…). */
 export class KubeezClient {
   constructor(
@@ -18,29 +48,39 @@ export class KubeezClient {
     private readonly baseUrl = env.kubeezApiUrl,
   ) {}
 
+  /**
+   * Retries: reads (GET) on network errors, 429 and 5xx; writes (POST) only on 429 — a rate-limited
+   * POST was never accepted, but a 5xx POST might have been (retrying could bill twice).
+   */
   private async request<T>(method: string, path: string, body?: unknown | FormData): Promise<T> {
     const isForm = body instanceof FormData;
-    const res = await fetch(`${this.baseUrl}${path}`, {
-      method,
-      headers: { "X-API-Key": this.apiKey, Accept: "application/json", ...(body && !isForm ? { "Content-Type": "application/json" } : {}) },
-      ...(body ? { body: isForm ? body : JSON.stringify(body) } : {}),
-    });
-    const text = await res.text();
-    const json = text ? (JSON.parse(text) as unknown) : {};
-    if (!res.ok) {
-      const e = json as { error?: string; message?: string; hint?: string; detail?: unknown };
-      const msg = e.message ?? e.error ?? (e.detail ? JSON.stringify(e.detail) : text.slice(0, 300));
-      const hint =
-        res.status === 401
-          ? "check KUBEEZ_API_KEY in .env"
-          : res.status === 429
-            ? "rate limited — wait and retry"
-            : res.status === 400 && /credit/i.test(msg)
-              ? "top up credits at https://kubeez.com"
-              : (e.hint ?? undefined);
-      throw new KubeezError(`Kubeez ${method} ${path} → ${res.status}: ${msg}`, res.status, hint);
+    const idempotent = method === "GET";
+    for (let attempt = 0; ; attempt++) {
+      let res: Response;
+      try {
+        res = await fetch(`${this.baseUrl}${path}`, {
+          method,
+          headers: { "X-API-Key": this.apiKey, Accept: "application/json", ...(body && !isForm ? { "Content-Type": "application/json" } : {}) },
+          ...(body ? { body: isForm ? body : JSON.stringify(body) } : {}),
+        });
+      } catch (e) {
+        if (idempotent && attempt < MAX_RETRIES) {
+          await Bun.sleep(backoff(attempt));
+          continue;
+        }
+        throw new KubeezError(`Kubeez ${method} ${path}: network error — ${(e as Error).message}`, undefined, "check connectivity / KUBEEZ_API_URL");
+      }
+      const text = await res.text();
+      const json = parseJson(text);
+      if (res.ok) return (json ?? {}) as T;
+      const retryable = res.status === 429 || (idempotent && res.status >= 500);
+      if (retryable && attempt < MAX_RETRIES) {
+        const resetAfter = (json as { reset_after?: number } | null)?.reset_after;
+        await Bun.sleep(resetAfter ? Math.min(resetAfter * 1000, 60_000) : backoff(attempt));
+        continue;
+      }
+      throw toError(method, path, res.status, json, text);
     }
-    return json as T;
   }
 
   models(type?: "image" | "video" | "music" | "speech") {

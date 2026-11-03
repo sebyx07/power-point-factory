@@ -20,9 +20,9 @@ await main(async () => {
   for (const p of targets(a._)) {
     const r = await qaDeck(p, { log });
     console.log(reportConsole(r));
-    if (!r.ok && a.flags.force !== true) throw new DeckSpecError(`${p.rel}: QA failed — not exporting`, "fix the errors (build/qa.md) or pass --force");
+    if (!r.ok && a.flags.force !== true) throw new DeckSpecError(`${p.rel}: QA failed — not exporting`, "fix the errors (out/…/<deck>-qa.md) or pass --force");
     const spec = await loadDeck(p);
-    const date = p.dir.split("/").at(-2) ?? "";
+    const date = p.date.toISOString().slice(0, 10);
     const name = safe([spec.company, spec.title, date].filter(Boolean).join(" - "));
     const dir = p.exportDir;
     await mkdir(dir, { recursive: true });

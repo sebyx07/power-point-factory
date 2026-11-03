@@ -92,6 +92,8 @@ export interface GenerateSpec {
   seed?: number;
   /** cut subject out onto transparent bg (Kubeez remove-background) */
   removeBackground?: boolean;
+  /** models that expose it (nano-banana-pro…): "1K" | "2K" | "4K" */
+  resolution?: "1K" | "2K" | "4K";
 }
 export type ImageSource = { file: string } | { generate: GenerateSpec } | { icon: string; color?: Hex };
 

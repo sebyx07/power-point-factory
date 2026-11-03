@@ -1,0 +1,104 @@
+# yaml-language-server: $schema=https://developerz.ai/schemas/maintainer.v1.json
+# developerz.ai maintainer policy — sebyx07/power-point-factory
+#
+# FULLY AI-MAINTAINED. The agent triages, answers, reviews, merges on a green `CI OK`, and closes
+# what has stalled. A clone-and-use template: `main` is the product, nothing is published.
+version: 1
+
+tone:
+  voice: friendly
+  language: en
+
+triage:
+  skip_project_members: false
+  ask_for_repro: true
+  required_fields: [steps, expected, actual, version]
+  qualify_into: [bug, feature, dupe, question, docs]
+  close_unanswered_repro_after_days: 14
+  stale_after_days: 30
+  stale_action: comment_then_close
+  non_goals:
+    - "Rendering slides as images or HTML instead of native, editable PowerPoint objects"
+    - "Fonts that are not Office-safe (decks must look identical on the presenter's laptop)"
+    - "Disabling or loosening a QA check to make a deck pass — fix the layout or the copy"
+    - "Hard-coded colors, sizes or coordinates in slide recipes (props only; tokens live in themes/brands)"
+    - "Default motion that auto-plays entrance builds (flickers on enter); builds stay opt-in (`build`, `keynote`)"
+    - "Invented facts, numbers, quotes, or real companies' logos in samples"
+    - "Regenerating committed Kubeez media, or anything that can bill credits twice"
+    - "Backwards-compatibility shims, dead options, or speculative abstractions"
+    - "Outside changes to CI or the maintainer config (.github/, .dz/, bin/check): owner only. Dependency-bot bumps are not covered: merge those on green"
+
+handoff:
+  mode: fleet
+  ask_reporter_first: false
+
+pr:
+  wait_for_other_bots: []
+  auto_merge: true
+  auto_merge_scope: any
+  require_review: true
+  required_checks:
+    - "CI OK"
+  close_awaiting_author_after_days: 21
+
+review:
+  enabled: true
+  force: true
+  depth: inline
+  profile: chill
+  request_changes: true
+  approval: false
+  high_level_summary: true
+  learnings: false
+  chat_auto_reply: true
+  auto_review:
+    enabled: true
+    incremental: true
+    drafts: false
+    base_branches: [main]
+    ignore_title_keywords: [WIP, "DO NOT MERGE"]
+  anti_noise:
+    severity_floor: minor
+    max_comments: 10
+    dedupe: true
+  path_filters: []
+  path_instructions:
+    - path: "src/render/motion*.ts"
+      instructions: >-
+        OOXML injected into slide XML. Check PresentationML child order (cSld, clrMapOvr, transition,
+        timing, extLst), cTn ids unique and in document order, bldP only for p:sp shapes, mc:AlternateContent
+        with a fallback for p14/p159. test/motion.test.ts must cover any new structure.
+    - path: "src/text/**"
+      instructions: >-
+        Text measurement must match PowerPoint: Office-safe face ↔ metric-compatible twin, raw advances +
+        kerning. Any change needs test/text.test.ts updates and a look at every deck's contact sheet.
+    - path: "src/assets/kubeez/**"
+      instructions: >-
+        Paid API. A change must keep: cache hits never construct the client or need a key; identical specs
+        dedupe in-process; job ids recorded in pending.json before polling; POSTs never retried on 5xx;
+        cache keys stable for existing committed files.
+    - path: "src/layouts/**"
+      instructions: >-
+        Layouts are pure (props, ctx) => El[]: no I/O, theme tokens only, stable unique ids. A new layout needs
+        index.ts + test/layouts.fixtures.ts + docs/layouts.md. Ask for before/after contact sheets.
+    - path: "presentations/halden/**"
+      instructions: >-
+        The public showcase. Numbers must reconcile across slides (bridge, margins, table totals, dates,
+        "slide N" references). Committed out/halden outputs must be rebuilt in the same PR.
+
+release:
+  manager: none
+  channels: []
+
+escalate:
+  ask_before_acting: [breaking_change]
+
+schedules:
+  - name: health
+    days: [mon, tue, wed, thu, fri, sat, sun]
+    hours_utc: [6]
+    brief_file: .dz/briefs/health.md
+  - name: improve
+    days: [mon]
+    hours_utc: [7]
+    brief_file: .dz/briefs/improve.md

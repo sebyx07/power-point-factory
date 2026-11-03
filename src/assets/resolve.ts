@@ -1,6 +1,7 @@
 import { mkdir } from "node:fs/promises";
-import { isAbsolute, join } from "node:path";
+import { join } from "node:path";
 import sharp from "sharp";
+import { resolveFrom } from "@/cli/paths";
 import { AssetError } from "@/core/errors";
 import type { Box, ImageEl, Scene } from "@/core/types";
 import { env } from "@/env";
@@ -37,7 +38,7 @@ async function sourceBytes(el: ImageEl, ctx: ResolveCtx): Promise<{ bytes: Buffe
   const px = Math.round(Math.max(el.box.w, el.box.h) * PPI);
   if ("icon" in s) return { bytes: await iconPng(s.icon, s.color ?? ctx.theme.colors.accent, Math.min(px, 600)), origin: `icon:${s.icon}`, placeholder: false };
   if ("file" in s) {
-    const p = isAbsolute(s.file) ? s.file : join(ctx.deckDir, s.file);
+    const p = resolveFrom(ctx.deckDir, s.file);
     const f = Bun.file(p);
     if (!(await f.exists())) throw new AssetError(`image file not found: ${p}`, "put it in the deck's assets/ folder and reference it as assets/<name>");
     return { bytes: Buffer.from(await f.arrayBuffer()), origin: s.file, placeholder: false };

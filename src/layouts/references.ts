@@ -17,7 +17,6 @@ export interface ReferencesProps extends Partial<Heading> {
 /** Numbered sources with live links — the credibility page at the back of the appendix. */
 export const references = defineLayout<ReferencesProps>({
   name: "references",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const { els, contentTop } = titleBlock(ctx, { title: p.title ?? "Sources", ...(p.eyebrow ? { eyebrow: p.eyebrow } : { eyebrow: "Appendix" }) });

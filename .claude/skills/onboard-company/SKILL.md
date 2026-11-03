@@ -1,5 +1,4 @@
 ---
-
 name: onboard-company
 description: Use when a presentation is for a company that has no presentations/<company>/ folder yet (or an empty BRAND.md). Researches the brand from public sources, downloads logos, writes BRAND.md + brand.ts so every later deck is on-brand.
 ---
@@ -8,7 +7,7 @@ description: Use when a presentation is for a company that has no presentations/
 
 1. **Scaffold:** `bin/deck new <company> <project> <deck>` creates `presentations/<company>/{BRAND.md,brand.ts,brand/,layouts/}`.
 2. **Research (public sources only):** website, press/media kit, annual report, LinkedIn. Note URL + date for every fact.
-3. **Logos → `brand/`:** prefer the official press kit SVG. Save `logo.svg` (light canvas) and `logo-white.svg` (dark). No SVG? Highest-res PNG; transparent background via `bin/kubeez remove-bg <file> --out brand/logo.png`. Never redraw or "approximate" a real company's logo.
+3. **Logos → `brand/`:** prefer the official press kit SVG. Save `logo.svg` (light canvas) and `logo-white.svg` (dark). No SVG? Highest-res PNG; transparent background via `bin/kubeez remove-bg <file> --out presentations/<company>/brand/logo.png`. Never redraw or "approximate" a real company's logo.
 4. **Colors:** sample the primary + accent from the logo/site (exact hex). Map to roles in `BRAND.md` (accent, ink, muted, surface). Check AA: add the brand to `test/themes.test.ts` if it becomes a shared theme; otherwise `bin/deck qa` contrast checks cover it.
 5. **Fonts:** record the brand font, then map to the nearest Office-safe face (geometric sans → Arial; humanist sans → Calibri; serif → Georgia/Cambria). Write the mapping in `BRAND.md` § Type.
 6. **Voice + facts:** 3 voice adjectives, words they use/avoid, approved facts with sources. Unknown → write "undecided", never invent.

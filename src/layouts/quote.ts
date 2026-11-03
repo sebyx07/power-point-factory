@@ -12,7 +12,6 @@ export interface QuoteProps {
 
 export const quote = defineLayout<QuoteProps>({
   name: "quote",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const mx = t.space.marginX + 0.6;

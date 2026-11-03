@@ -38,15 +38,18 @@ export interface KpiStripProps extends parts.Heading {
 
 export const kpiStrip = defineLayout<KpiStripProps>({
   name: "kpiStrip",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const { els, contentTop } = parts.titleBlock(ctx, p);
     const cols = columns({ ...parts.contentBox(ctx, contentTop), h: 1.4 }, p.kpis.length, t.space.gutter);
-    const tiles = p.kpis.flatMap((k, i) => [
-      parts.enter(t, el.text(t, `v-${i}`, { ...cols[i]!, h: 0.9 }, k.value, { role: "metric" }), i + 1),
-      el.text(t, `l-${i}`, { ...cols[i]!, y: cols[i]!.y + 0.95, h: 0.4 }, k.label, { role: "caption" }),
-    ]);
+    const tiles = p.kpis.flatMap((k, i) => {
+      const c = cols[i];
+      if (!c) return [];
+      return [
+        parts.enter(t, el.text(t, `v-${i}`, { ...c, h: 0.9 }, k.value, { role: "metric" }), i + 1),
+        el.text(t, `l-${i}`, { ...c, y: c.y + 0.95, h: 0.4 }, k.label, { role: "caption" }),
+      ];
+    });
     return [...els, ...tiles, ...parts.footer(ctx)];
   },
 });

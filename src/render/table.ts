@@ -1,5 +1,6 @@
 import type PptxGenJS from "pptxgenjs";
 import { bare, mix } from "@/core/color";
+import { CELL_MARGIN, columnWidths } from "@/core/table";
 import type { Align, Cell, TableEl } from "@/core/types";
 import type { Theme } from "@/theme/types";
 import { cellRuns } from "./cells";
@@ -10,14 +11,13 @@ const isGlyph = (v: Cell) => typeof v === "object" && "harvey" in v;
 /** Header in bold on a hairline, zebra-free body, right-aligned numbers, optional highlight/total row. */
 export function addTable(slide: PptxGenJS.Slide, el: TableEl, t: Theme): void {
   const s = el.table;
-  const n = s.header.length;
   const align: Align[] =
     s.align ?? s.header.map((_, ci) => (s.rows.every((r) => isNumeric(r[ci] ?? "")) ? "right" : s.rows.every((r) => isGlyph(r[ci] ?? "")) ? "center" : "left"));
   const rule = bare(t.colors.rule);
   const none = { type: "none" as const };
   type Borders = [PptxGenJS.BorderProps, PptxGenJS.BorderProps, PptxGenJS.BorderProps, PptxGenJS.BorderProps];
   const border = (bottom: string, pt = 0.75): Borders => [none, none, { type: "solid", color: bottom, pt }, none];
-  const margin: [number, number, number, number] = [0.04, 0.12, 0.04, 0.12];
+  const margin = CELL_MARGIN;
   const header: PptxGenJS.TableCell[] = s.header.map((h, ci) => ({
     text: h.toUpperCase(),
     options: {
@@ -50,13 +50,11 @@ export function addTable(slide: PptxGenJS.Slide, el: TableEl, t: Theme): void {
       },
     }));
   });
-  const weights = s.widths ?? Array.from({ length: n }, (_, i) => (i === 0 ? 1.6 : 1));
-  const sum = weights.reduce((a, b) => a + b, 0);
   slide.addTable([header, ...body], {
     x: el.box.x,
     y: el.box.y,
     w: el.box.w,
-    colW: weights.map((w) => (el.box.w * w) / sum),
+    colW: columnWidths(el),
     rowH: [Math.max(el.rowH * 0.8, 0.36), ...body.map(() => el.rowH)],
     fontFace: el.font,
     fontSize: el.size,

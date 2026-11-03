@@ -10,13 +10,14 @@ node_modules/
 # showcase ONLY: the Halden sample's deliverables are committed so you can see results without building.
 # Your own decks stay ignored. (Remove these lines in your fork if you want.)
 !/out/halden/
-!/out/halden/**/
-!/out/halden/**/*.pptx
-!/out/halden/**/*.pdf
-!/out/halden/**/contact-sheet.png
-!/out/halden/**/slides/*.png
-/out/halden/**/export/
-/out/halden/**/media/
+!/out/halden/q4-business-review/
+!/out/halden/q4-business-review/2026-11-03/
+!/out/halden/q4-business-review/2026-11-03/board-update/
+!/out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx
+!/out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf
+!/out/halden/q4-business-review/2026-11-03/board-update/board-update-contact-sheet.png
+!/out/halden/q4-business-review/2026-11-03/board-update/slides/
+!/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-*.png
 *.log
 .DS_Store
 ~$*.pptx

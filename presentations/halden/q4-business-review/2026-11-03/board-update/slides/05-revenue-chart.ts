@@ -3,7 +3,7 @@ import { slide } from "@/slide";
 export default slide({
   layout: "chart",
   eyebrow: "Results",
-  title: "Revenue grew every quarter as contract logistics outpaced freight",
+  title: "Revenue rose 9% year on year as contract logistics outpaced freight",
   chart: {
     type: "stackedColumn",
     labels: ["Q1 25", "Q2 25", "Q3 25", "Q4 25", "Q1 26", "Q2 26", "Q3 26", "Q4 26"],

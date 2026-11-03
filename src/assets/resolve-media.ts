@@ -1,5 +1,6 @@
-import { isAbsolute, join } from "node:path";
+import { join } from "node:path";
 import sharp from "sharp";
+import { resolveFrom } from "@/cli/paths";
 import { AssetError } from "@/core/errors";
 import type { MediaEl } from "@/core/types";
 import { env } from "@/env";
@@ -21,9 +22,9 @@ export async function resolveMedia(el: MediaEl, slide: number, ctx: ResolveCtx):
     return posterOut;
   };
   if ("file" in s) {
-    const p = isAbsolute(s.file) ? s.file : join(ctx.deckDir, s.file);
+    const p = resolveFrom(ctx.deckDir, s.file);
     if (!(await Bun.file(p).exists())) throw new AssetError(`media file not found: ${p}`, "put it in the deck's assets/ folder");
-    const poster = s.poster ? (isAbsolute(s.poster) ? s.poster : join(ctx.deckDir, s.poster)) : undefined;
+    const poster = s.poster ? resolveFrom(ctx.deckDir, s.poster) : undefined;
     return { ...el, resolved: { path: p, poster: await posterFrom(poster, el.alt), placeholder: false, origin: s.file } };
   }
   if (!env.kubeezApiKey && !(await isCached(ctx.deckDir, s))) {

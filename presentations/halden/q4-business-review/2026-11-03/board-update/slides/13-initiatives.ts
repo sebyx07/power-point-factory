@@ -3,7 +3,7 @@ import { slide } from "@/slide";
 export default slide({
   layout: "cards",
   eyebrow: "2027 plan",
-  title: "Three initiatives carry the 2027 plan",
+  title: "Three initiatives carry the 2027 plan; only the hub needs new capital",
   cards: [
     { icon: "warehouse", title: "Nordic hub", body: "120k pallet positions near Gothenburg. Frees 9 points of utilization across the region." },
     { icon: "heart-pulse", title: "Health care cold chain", body: "GDP-certified 2–8 °C capacity in three hubs. Follows our fastest-growing segment." },

@@ -18,7 +18,6 @@ export interface SummaryProps extends Heading {
 /** Consulting executive summary: numbered claim rows, hairline separated. Slide 2 of every serious deck. */
 export const summary = defineLayout<SummaryProps>({
   name: "summary",
-  chrome: true,
   render: (p, ctx) => {
     const n = p.rows.length;
     if (n < 2 || n > 5) throw new DeckSpecError(`summary: ${n} rows`, "use 3–5 rows — one per section");

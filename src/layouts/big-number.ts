@@ -17,7 +17,6 @@ export interface BigNumberProps {
 /** One giant number + one line. A punctuation mark between dense slides — ≤ 2 per deck. */
 export const bigNumber = defineLayout<BigNumberProps>({
   name: "bigNumber",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const mx = t.space.marginX;

@@ -10,7 +10,6 @@ export interface CustomProps extends Partial<Heading> {
 
 export const custom = defineLayout<CustomProps>({
   name: "custom",
-  chrome: true,
   render: (p, ctx) => {
     const head = p.title
       ? titleBlock(ctx, { title: p.title, ...(p.eyebrow ? { eyebrow: p.eyebrow } : {}), ...(p.subtitle ? { subtitle: p.subtitle } : {}) })

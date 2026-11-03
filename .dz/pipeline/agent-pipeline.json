@@ -1,0 +1,10 @@
+{
+  "repo": "sebyx07/power-point-factory",
+  "merge": {
+    "reviewGate": "ci-only",
+    "standingAuthorization": true
+  },
+  "policy": {
+    "defaultTier": "GREEN"
+  }
+}

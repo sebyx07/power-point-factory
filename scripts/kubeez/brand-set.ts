@@ -7,6 +7,7 @@ import { KubeezClient } from "@/assets/kubeez/client";
 import { optimize } from "@/assets/kubeez/optimize";
 import { parseArgs } from "@/cli/args";
 import { log, main } from "@/cli/main";
+import { userPath } from "@/cli/paths";
 import { DeckSpecError } from "@/core/errors";
 import { env } from "@/env";
 import { PRESENTATIONS } from "@/pipeline/paths";
@@ -21,7 +22,7 @@ interface Shot {
 await main(async () => {
   const [company, file] = parseArgs()._;
   if (!company || !file) throw new DeckSpecError("usage: bin/kubeez brand-set <company> <shots.json>");
-  const shots = (await Bun.file(file).json()) as Shot[];
+  const shots = (await Bun.file(userPath(file)).json()) as Shot[];
   const dir = join(PRESENTATIONS, company, "brand", "photos");
   await mkdir(dir, { recursive: true });
   const c = new KubeezClient();

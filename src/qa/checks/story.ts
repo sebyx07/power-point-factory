@@ -33,7 +33,7 @@ export function story(scene: Scene): Finding[] {
             fix: "write the takeaway as a sentence: “Revenue grew 9%, led by contract logistics”",
           }),
         );
-      else if (words > 16) out.push(f("warn", "action-title", s.index, `title is ${words} words`, { el: "title", fix: "≤ 15 words" }));
+      else if (words > 15) out.push(f("warn", "action-title", s.index, `title is ${words} words`, { el: "title", fix: "≤ 15 words" }));
     }
     if (DATA.has(s.layout) && !s.elements.some((e) => e.id === "source"))
       out.push(f("info", "source-line", s.index, "data slide without a source line", { fix: 'add source: "…"' }));

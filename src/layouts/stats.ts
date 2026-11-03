@@ -20,14 +20,15 @@ export interface StatsProps extends Heading {
 
 export const stats = defineLayout<StatsProps>({
   name: "stats",
-  chrome: true,
   render: (p, ctx) => {
     const n = p.stats.length;
     if (n < 1 || n > 4) throw new DeckSpecError(`stats: ${n} tiles`, "use 1–4 stats; split the rest onto another slide");
     const t = ctx.theme;
     const { els, contentTop } = titleBlock(ctx, p);
     const area = contentBox(ctx, contentTop + 0.15);
-    const tileH = Math.min(3.4, area.h - (p.source ? 0.4 : 0));
+    // tiles sized to their content (no dead space at the bottom), capped by the area
+    const need = Math.max(...p.stats.map((s) => 0.35 * 2 + 1.15 + 0.62 + (s.delta ? 0.4 : 0) + (s.detail ? 0.45 : 0)));
+    const tileH = Math.min(need, area.h - (p.source ? 0.4 : 0));
     const tiles = columns({ ...area, h: tileH }, n, t.space.gutter);
     const out: El[] = [...els];
     p.stats.forEach((s, i) => {

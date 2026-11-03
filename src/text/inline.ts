@@ -24,7 +24,7 @@ export type TextInput = string | string[];
 
 /** string → one paragraph; string[] → one paragraph each. `==x==` = accent highlight. */
 export function paragraphs(input: TextInput, opts: { bullet?: boolean; spaceAfter?: number; accent?: Hex } = {}): Paragraph[] {
-  const list = Array.isArray(input) ? input : [input];
+  const list = (Array.isArray(input) ? input : [input]).flatMap((s) => s.split("\n"));
   return list.map((s) => ({
     runs: parseInline(s, opts.accent),
     ...(opts.bullet ? { bullet: true } : {}),

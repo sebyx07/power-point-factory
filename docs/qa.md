@@ -1,6 +1,6 @@
 # QA — what the machine checks
 
-`bin/deck loop|qa` → `out/<deck>/qa.md` + `qa.json`. ✖ error fails the build · ▲ warn · · info. Each finding has `→ fix`.
+`bin/deck loop|qa` → `out/<path>/<deck>-qa.md` + `<deck>-qa.json`. ✖ error fails the build · ▲ warn · · info. Each finding has `→ fix`.
 
 | Stage    | Rule                                                                                                                                                         | Checks                                                                                                       |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
@@ -9,11 +9,11 @@
 | static   | `contrast`                                                                                                                                                   | WCAG AA against the real backdrop (blends translucent scrims; images = worst case)                           |
 | static   | `placeholder-text` · `slop` · `emoji` · `bullet-count` · `bullet-length` · `word-count` · `notes`                                                            | copy discipline                                                                                              |
 | static   | `action-title` · `layout-variety` · `source-line` · `pie-slices` · `pie-negative` · `series-count` · `axis-zero` · `build-steps` · `transitions` · `closing` | story + chart discipline                                                                                     |
-| static   | `image-placeholder` · `media-placeholder` · `image-resolution` · `alt-text` · `link`                                                                         | assets and links                                                                                             |
-| pptx     | `pptx-slides` · `pptx-xml` · `motion`                                                                                                                        | slide count, every XML part well-formed, motion parts present                                                |
+| static   | `image-placeholder` · `media-placeholder` · `image-resolution` · `alt-text` · `link` · `slide-ref`                                                           | assets, links, "slide N" refs                                                                                |
+| pptx     | `pptx-slides` · `pptx-xml` · `motion` · `slide-title`                                                                                                        | slide count, every XML part well-formed, motion parts present, real title placeholders                       |
 | render   | `render-count` · `blank` · `edge-ink`                                                                                                                        | LibreOffice → PDF → PNG; blank slides; ink touching the edge (overflow)                                      |
 | baseline | `baseline`                                                                                                                                                   | pixel diff vs `.baseline/` (`bin/deck approve`)                                                              |
 
-**Artifacts for the reviewer:** `contact-sheet.png` (all slides), `slides/slide-NN.png`, `outline.md` (all copy, titles test), `scene.json` (positioned elements, for debugging layouts).
+**Artifacts for the reviewer:** `<deck>-contact-sheet.png` (all slides), `slides/<deck>-NN.png`, `<deck>-outline.md` (all copy, titles test), `<deck>-scene.json` (positioned elements, for debugging layouts).
 
 Adding a rule: pure function in `src/qa/checks/`, wire into `checks/index.ts`, test in `test/`.

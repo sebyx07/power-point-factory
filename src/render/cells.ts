@@ -6,7 +6,7 @@ import type { Theme } from "@/theme/types";
 export const HARVEY = ["○", "◔", "◑", "◕", "●"] as const;
 const RAG_LABEL: Record<Rag, string> = { green: "On track", amber: "At risk", red: "Off track" };
 
-export const ragColor = (t: Theme, r: Rag): Hex => ({ green: t.colors.positive, amber: "#C98A00" as Hex, red: t.colors.negative })[r];
+export const ragColor = (t: Theme, r: Rag): Hex => ({ green: t.colors.positive, amber: t.colors.warning ?? ("#A86200" as Hex), red: t.colors.negative })[r];
 
 export function cellText(c: Cell): string {
   if (typeof c === "number") return c.toLocaleString("en-US");

@@ -1,6 +1,6 @@
 import type PptxGenJS from "pptxgenjs";
-import { bare, mix } from "@/core/color";
-import type { ChartEl } from "@/core/types";
+import { bare, contrast, mix } from "@/core/color";
+import type { ChartEl, Hex } from "@/core/types";
 import type { Theme } from "@/theme/types";
 
 const TYPES = {
@@ -29,7 +29,13 @@ export function addChart(slide: PptxGenJS.Slide, el: ChartEl, t: Theme): void {
       : c.series.map((s) => ({ name: s.name, labels: c.labels, values: s.values }));
   const axisColor = bare(t.colors.muted);
   const fmt = c.format ?? "#,##0";
-  const colors = round ? c.labels.map((_, i) => t.colors.chart[i % t.colors.chart.length] ?? t.colors.accent) : t.colors.chart;
+  // round charts print white % labels inside slices → darken any slice that can't carry them (≥ 3:1)
+  const readable = (h: Hex): Hex => {
+    let out = h;
+    for (let k = 0; k < 10 && contrast(out, t.colors.onAccent) < 3; k++) out = mix(t.colors.text, out, 0.15);
+    return out;
+  };
+  const colors = round ? c.labels.map((_, i) => readable(t.colors.chart[i % t.colors.chart.length] ?? t.colors.accent)) : t.colors.chart;
   const opts: PptxGenJS.IChartOpts = {
     x: el.box.x,
     y: el.box.y,

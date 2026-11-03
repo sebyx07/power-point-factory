@@ -1,6 +1,6 @@
 ---
-
-## paths: ["src/**", "scripts/**", "test/**"]
+paths: ["src/**", "scripts/**", "test/**"]
+---
 
 # Engine code
 

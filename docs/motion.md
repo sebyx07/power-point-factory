@@ -7,9 +7,9 @@ pptxgenjs writes neither; `src/render/motion*.ts` injects OOXML (`<p:transition>
 | Profile            | Transition                      | Builds                                                         | Use                             |
 | ------------------ | ------------------------------- | -------------------------------------------------------------- | ------------------------------- |
 | `none`             | cut                             | none                                                           | read-ahead, emailed, printed    |
-| `subtle` (default) | theme (fade ~0.5 s)             | **none** — content arrives with the slide, no flicker on enter | board, QBR, most corporate      |
+| `subtle` (default) | theme (fade ~0.5 s) | **none** — content arrives with the slide (no flicker on enter) | board, QBR, most corporate |
 | `build`            | fade 0.35 s                     | step 1 with the slide, then **one click per step**             | presenter argues point by point |
-| `keynote`          | **Morph** 0.8 s (fade fallback) | auto rise (fade + 4% drift), 0.52 s, 0.17 s stagger            | launches, all-hands, pitches    |
+| `keynote`          | **Morph** 0.8 s (fade fallback) | auto rise (fade + 4% drift), 0.5 s per effect, 0.25 s between groups | launches, all-hands, pitches    |
 
 - Morph pairs objects named `!!title`, `!!eyebrow`, `!!title-mark`… across consecutive slides, so titles glide instead of cutting. PowerPoint 2019+/365; older versions fall back to fade (`mc:AlternateContent`).
 - Effects are chosen by layouts per element role: text `fade`/`rise`, charts and Gantt bars `wipe`, dots `zoom`. Order = reading order; equal order = together.

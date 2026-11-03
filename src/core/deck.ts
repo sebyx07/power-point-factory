@@ -26,8 +26,6 @@ export interface DeckMeta {
 
 export interface Layout<P> {
   name: string;
-  /** cover/section/closing hide the footer */
-  chrome: boolean;
   /** background override (e.g. dark sections) */
   background?: (ctx: LayoutCtx, props: P) => `#${string}`;
   render: (props: P, ctx: LayoutCtx) => El[];

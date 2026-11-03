@@ -10,8 +10,8 @@ export default slide({
       model: "nano-banana-pro-2K",
     },
   },
-  imageAlt: "Aerial view of the proposed hub site",
+  imageAlt: "Illustrative aerial view of a comparable logistics site",
   title: "Gothenburg: 40 minutes from the port, on the E6 corridor",
-  caption: "Proposed site, 62,000 m², exclusive option until December 15",
-  notes: "Rendering of the site with the planned building. The port connection is what makes the economics work.",
+  caption: "Illustrative comparable site · proposed plot 62,000 m², option until Dec 15 · drive time: Port of Gothenburg route planner",
+  notes: "Illustrative image, not the actual plot. The port connection (40 min, Port of Gothenburg route planner) is what makes the economics work.",
 });

@@ -14,5 +14,3 @@ export function markTitle(xml: string): string {
   }
   return xml;
 }
-
-export const hasTitle = (xml: string) => xml.includes('<p:ph type="title"/>');

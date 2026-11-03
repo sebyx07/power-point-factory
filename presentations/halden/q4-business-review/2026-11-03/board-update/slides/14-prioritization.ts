@@ -15,6 +15,7 @@ export default slide({
     { label: "Fleet electrification", x: 0.75, y: 0.38, size: 0.5 },
     { label: "Customer portal v2", x: 0.3, y: 0.3, size: 0.3 },
   ],
+  sizeLegend: "Bubble size = 3-year profit impact",
   insights: [
     "**Nordic hub**: highest value, needs capex approval",
     "Labour planning and cold chain are funded in the operating plan",

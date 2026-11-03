@@ -6,11 +6,14 @@ import type { Scene, ShapeEl } from "@/core/types";
 import type { Theme } from "@/theme/types";
 import { addChart } from "./chart";
 import { applyMotion } from "./motion";
+import { reproducible } from "./reproducible";
 import { addTable } from "./table";
 import { addText } from "./text";
 
 export interface RenderMeta {
   title: string;
+  /** pinned build instant (deck folder date) → reproducible bytes */
+  at: Date;
   author?: string;
   company?: string;
 }
@@ -83,5 +86,5 @@ export async function renderPptx(input: Scene, theme: Theme, meta: RenderMeta): 
     if (s.notes) slide.addNotes(s.notes);
   }
   const buf = (await pres.write({ outputType: "uint8array" })) as Uint8Array;
-  return applyMotion(buf, scene);
+  return reproducible(await applyMotion(buf, scene), meta.at);
 }

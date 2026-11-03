@@ -1,6 +1,6 @@
 ---
-
-## paths: ["presentations/**"]
+paths: ["presentations/**"]
+---
 
 # Writing presentations
 

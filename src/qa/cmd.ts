@@ -9,7 +9,3 @@ export async function run(cmd: string[], opts: { cwd?: string; timeoutMs?: numbe
   if (code !== 0) throw new CommandError(`${cmd[0]} exited ${code}: ${(err || out).trim().slice(0, 500)}`, `ran: ${cmd.join(" ")}`);
   return out;
 }
-
-export function which(bin: string): boolean {
-  return Bun.which(bin) !== null;
-}

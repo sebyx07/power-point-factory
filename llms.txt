@@ -2,7 +2,7 @@
 
 > Corporate-ready PowerPoint presentations as code. Typed Bun/TypeScript slide recipes → native editable .pptx (shapes, charts, tables, notes, titles, transitions, animations) → LibreOffice render to PDF/PNG → automatic QA. AI media via the Kubeez API. Built for AI agents (Claude Code) to write decks end to end.
 
-Start with CLAUDE.md (rules, commands, the deck loop). Decks live in presentations/<company>/<project>/<YYYY-MM-DD>/<deck>/ (deck.ts + slides/NN-name.ts, one slide per file); outputs in out/<same path>/. Run `bin/deck loop <deck>` and read out/<deck>/qa.md + contact-sheet.png.
+Start with CLAUDE.md (rules, commands, the deck loop). Decks live in presentations/<company>/<project>/<YYYY-MM-DD>/<deck>/ (deck.ts + slides/NN-name.ts, one slide per file); outputs in out/<same path>/. Run `bin/deck loop <deck>` and read out/<path>/<deck>-qa.md + <deck>-contact-sheet.png.
 
 ## Core docs
 - [CLAUDE.md](CLAUDE.md): agent rules, repo map, commands, the deck loop
@@ -22,9 +22,10 @@ Start with CLAUDE.md (rules, commands, the deck loop). Decks live in presentatio
 
 ## Example
 - [presentations/halden/BRAND.md](presentations/halden/BRAND.md): a complete company brand brief
-- [presentations/halden/q4-business-review/2026-11-03/board-update/](presentations/halden/q4-business-review/2026-11-03/board-update/): a 21-slide board deck recipe
+- [presentations/halden/q4-business-review/2026-11-03/board-update/](presentations/halden/q4-business-review/2026-11-03/board-update/): a 20-slide board deck recipe
 - [out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf](out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf): its rendered output
 
 ## Optional
+- [CONTRIBUTING.md](CONTRIBUTING.md): setup, PR rules; the repo is AI-maintained via [.dz/README.md](.dz/README.md)
 - [.claude/README.md](.claude/README.md): commands, agents, skills for Claude Code
 - [src/deck.ts](src/deck.ts): the public DSL surface

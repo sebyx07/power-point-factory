@@ -18,7 +18,6 @@ export interface CoverProps {
 
 export const cover = defineLayout<CoverProps>({
   name: "cover",
-  chrome: false,
   background: (ctx, p) => (p.image ? ctx.theme.colors.bg : ctx.theme.colors.dark),
   render: (p, ctx) => {
     const t = ctx.theme;

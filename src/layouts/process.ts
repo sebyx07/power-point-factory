@@ -19,7 +19,6 @@ export interface ProcessProps extends Heading {
 /** Chevron process: 3–6 sequential steps, optional current step in accent. */
 export const process = defineLayout<ProcessProps>({
   name: "process",
-  chrome: true,
   render: (p, ctx) => {
     const n = p.steps.length;
     if (n < 3 || n > 6) throw new DeckSpecError(`process: ${n} steps`, "use 3–6 steps");

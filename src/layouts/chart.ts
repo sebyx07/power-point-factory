@@ -15,7 +15,6 @@ export interface ChartProps extends Heading {
 /** Native, editable PowerPoint chart (not an image) + an insight panel. */
 export const chart = defineLayout<ChartProps>({
   name: "chart",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const { els, contentTop } = titleBlock(ctx, p);
@@ -23,7 +22,9 @@ export const chart = defineLayout<ChartProps>({
     const h = area.h - (p.source ? 0.35 : 0);
     const [left, right] = p.insights?.length ? columns({ ...area, h }, 2, t.space.gutter + 0.2, [2.1, 1]) : [{ ...area, h }];
     const out: El[] = [...els];
-    if (left) out.push(enter(t, chartEl("chart", left, p.chart), 1, "wipe"));
+    const round = p.chart.type === "pie" || p.chart.type === "doughnut";
+    const box = left && round ? { ...left, w: Math.min(left.w, left.h * 1.55) } : left;
+    if (box) out.push(enter(t, chartEl("chart", box, p.chart), 1, round ? "fade" : "wipe"));
     if (right && p.insights) {
       const pad = 0.32;
       out.push(enter(t, rounded("insight-bg", right, t.colors.surface, t.radius), 2, "fade"));

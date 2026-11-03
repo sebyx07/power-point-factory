@@ -13,7 +13,9 @@ const has = (b: string) => Bun.which(b) !== null;
 ok(`bun ${Bun.version}`);
 has(env.soffice) ? ok("LibreOffice (QA renderer)") : miss("LibreOffice not found", "sudo apt install libreoffice-impress  ·  brew install --cask libreoffice");
 has("pdftoppm") ? ok("poppler pdftoppm (screenshots)") : miss("pdftoppm not found", "sudo apt install poppler-utils  ·  brew install poppler");
-for (const [face, { twin, pkg }] of Object.entries(SAFE_FONTS)) {
+const fc = has("fc-match");
+if (!fc) miss("fontconfig (fc-match) not found — cannot locate metric-twin fonts", "sudo apt install fontconfig · brew install fontconfig");
+for (const [face, { twin, pkg }] of fc ? Object.entries(SAFE_FONTS) : []) {
   const fam = Bun.spawnSync(["fc-match", "-f", "%{family}", twin]).stdout.toString();
   fam.split(",").includes(twin)
     ? ok(`${face} ↔ ${twin}`)

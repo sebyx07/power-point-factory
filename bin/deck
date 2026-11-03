@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # bin/deck <verb> [args] — one entrypoint, one verb per file in scripts/deck/.
 set -euo pipefail
+export DECK_CWD="${DECK_CWD:-$PWD}"
 cd "$(dirname "$0")/.."
 verb="${1:-help}"; shift || true
 if [[ "$verb" == "help" || ! -f "scripts/deck/$verb.ts" ]]; then

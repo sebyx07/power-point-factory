@@ -1,0 +1,44 @@
+name: Bug report
+description: Wrong slide output, a QA false positive/negative, a crash, or a .pptx PowerPoint won't open
+labels: [bug]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps (minimal recipe)
+      description: The smallest slide file(s) and command that reproduce it.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual (error, QA output, or screenshot)
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it show?
+      options:
+        - Build / CLI error
+        - QA report (out/…/<deck>-qa.md)
+        - Rendered PNG / PDF (LibreOffice)
+        - PowerPoint / Keynote / Google Slides opening the .pptx
+        - Kubeez generation
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "commit SHA, bun --version, OS, LibreOffice version, PowerPoint version if relevant"
+      placeholder: "a1b2c3d, bun 1.4.4, Ubuntu 26.04, LibreOffice 26.2, PowerPoint 365"
+    validations:
+      required: true

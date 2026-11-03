@@ -12,7 +12,6 @@ export interface TableProps extends Heading {
 /** Native PowerPoint table. ≤ 8 body rows — more belongs in an appendix. */
 export const table = defineLayout<TableProps>({
   name: "table",
-  chrome: true,
   render: (p, ctx) => {
     const t = ctx.theme;
     const bad = p.table.rows.find((r) => r.length !== p.table.header.length);
@@ -30,7 +29,7 @@ export const table = defineLayout<TableProps>({
     const out: El[] = [...els, enter(t, { ...el, box: { ...area, h: tableH } }, 1, "fade")];
     if (p.table.highlight !== undefined) {
       const y = area.y + headH + p.table.highlight * rowH;
-      out.push(enter(t, rect("highlight-bar", { x: area.x - 0.14, y: y + 0.06, w: 0.06, h: rowH - 0.12 }, t.colors.accent), 1, "fade"));
+      out.push(enter(t, rect("highlight-bar", { x: area.x + 0.01, y: y + 0.08, w: 0.05, h: rowH - 0.16 }, t.colors.accent), 1, "fade"));
     }
     return [...out, ...source(ctx, p.source, area.y + tableH + 0.15), ...footer(ctx)];
   },

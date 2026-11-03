@@ -1,4 +1,4 @@
-// bin/deck qa [deck…|all] [--fast] [--verbose] — build + checks + screenshots → build/qa.md. Exit 1 on errors.
+// bin/deck qa [deck…|all] [--fast] [--verbose] — build + checks + screenshots → out/<path>/<deck>-qa.md. Exit 1 on errors.
 import { parseArgs } from "@/cli/args";
 import { log, main } from "@/cli/main";
 import { targets } from "@/cli/targets";
@@ -11,7 +11,7 @@ await main(async () => {
   for (const p of targets(a._)) {
     const r = await qaDeck(p, { noRender: a.flags.fast === true, log });
     console.log(reportConsole(r, a.flags.verbose === true));
-    console.log(`  report: ${p.build}/qa.md${r.artifacts.contact ? `\n  look:   ${r.artifacts.contact}` : ""}`);
+    console.log(`  report: ${p.qaMd}${r.artifacts.contact ? `\n  look:   ${r.artifacts.contact}` : ""}`);
     if (!r.ok || (a.flags.strict === true && r.counts.warn > 0)) failed++;
   }
   return failed ? 1 : 0;

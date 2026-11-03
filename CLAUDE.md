@@ -15,7 +15,7 @@
 | `presentations/<company>/BRAND.md`                         | brand brain: voice, logo rules, colors, approved facts — **read first**                                                                                 |
 | `presentations/<company>/brand.ts` · `brand/` · `layouts/` | tokens (`extendTheme`), logos + reusable assets (`brand/assets.md`), company layouts                                                                    |
 | `presentations/<company>/<project>/<YYYY-MM-DD>/<deck>/`   | `deck.ts` (meta + theme) · `slides/NN-name.ts` (one slide per file, filename order) · `assets/` (`generated/` = Kubeez cache, committed) · `.baseline/` |
-| `out/<same path>/`                                         | generated, gitignored: `<deck>.pptx` `.pdf` `slides/slide-NN.png` `contact-sheet.png` `qa.md` `outline.md` `scene.json` `export/`                       |
+| `out/<same path>/`                                         | generated, gitignored: `<deck>.pptx` `.pdf` `slides/<deck>-NN.png` `<deck>-contact-sheet.png` `<deck>-qa.md` `<deck>-outline.md` `<deck>-scene.json` `export/` — every file carries the deck name                       |
 | `src/layouts/*.ts`                                         | built-in layouts (one per file) · registry `src/layouts/index.ts`                                                                                       |
 | `src/core/`                                                | scene types, `el.ts` primitives, geometry, color, motion profiles, errors                                                                               |
 | `src/text/`                                                | Office-safe fonts ↔ metric twins, measure/wrap/auto-fit, inline markup                                                                                  |
@@ -23,6 +23,7 @@
 | `src/assets/`                                              | image/icon/video/music resolve; `kubeez/` = the only Kubeez HTTP                                                                                        |
 | `src/qa/`                                                  | static checks (`checks/*`), LibreOffice render, pixel checks, baseline diff, report                                                                     |
 | `scripts/<area>/<verb>.ts`                                 | one verb per file; `bin/*` are thin shims                                                                                                               |
+| `.dz/` | developerz.ai maintainer policy + scheduled briefs — this repo is AI-maintained |
 | `docs/`                                                    | craft rules, layout catalog, Kubeez API, motion, QA, extending                                                                                          |
 
 ## Commands
@@ -46,7 +47,7 @@ bin/check                      # the gate (== CI): biome, tsc, guards, bun test,
 1. **Brief → outline.** Read `BRAND.md`. Write action titles only (ghost deck), check the titles alone tell the story. Structure: `docs/deck-craft.md`.
 2. **Recipe.** One file per slide in `slides/`. Pick the layout by message (`docs/layouts.md`). Speaker notes on every content slide.
 3. **`bin/deck loop`.** Fix every ✖ (each has `→ fix`). Warnings: fix or justify in notes.
-4. **Look.** Read `out/…/contact-sheet.png`, then full-size `slides/slide-NN.png` for anything odd. Proofread `outline.md`.
+4. **Look.** Read `out/…/<deck>-contact-sheet.png`, then full-size `slides/<deck>-NN.png` for anything odd. Proofread `<deck>-outline.md`.
 5. **Fresh eyes.** Dispatch `deck-reviewer` (`.claude/agents/`) with the paths — never review your own deck as final. Fix its list in one batch, re-loop.
 6. **Ship.** `bin/deck export`. Report: path, slide count, QA counts, reviewer verdict, open TBDs.
 
