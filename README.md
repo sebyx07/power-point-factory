@@ -19,10 +19,27 @@ From the everyday status update to the launch keynote: same recipes, different m
 | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-13.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-14.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-18.png) |
 | 2×2 prioritization matrix                                                      | Gantt roadmap with "today" line                                                | Decisions: action · owner · date · RAG                                         |
 
+## Make it yours: a private copy
+
+Your decks are source code: recipes, `BRAND.md`, logos and generated media. Keep them in git, in a **private** repo of your own. GitHub doesn't allow a fork of a public repo to be private, so make a private copy and track this repo as `upstream`:
+
+```sh
+# 1. create an empty PRIVATE repo, e.g. github.com/you/decks (no README), then:
+git clone https://github.com/sebyx07/power-point-factory.git decks && cd decks
+git remote rename origin upstream
+git remote add origin git@github.com:you/decks.git
+git push -u origin main
+
+# later: pull engine updates
+git pull upstream main
+```
+
+Then commit `presentations/<your-company>/…` as usual. `out/` stays ignored, so only sources are versioned. You can also delete the Halden sample and its `!/out/halden/` lines in `.gitignore`.
+
 ## Quickstart
 
 ```sh
-git clone <this repo> && cd power-point
+git clone <your private copy> && cd decks   # see "Make it yours" above
 bin/setup                       # bun install, .env, checks LibreOffice + poppler + fonts
 bin/deck loop                   # build + QA + screenshots of the sample → out/halden/…
 bin/deck new acme q1-review board-update --theme ledger
