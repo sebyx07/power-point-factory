@@ -61,7 +61,7 @@ bin/check                      # the gate (== CI): biome, tsc, guards, bun test,
 7. **All Kubeez HTTP** through `src/assets/kubeez/client.ts`. Generated media cached by spec hash in the deck's `assets/generated/` — commit it; never regenerate what exists.
 8. **New layout ⇒** file in `src/layouts/`, line in `index.ts`, fixture in `test/layouts.fixtures.ts` (test fails otherwise), row in `docs/layouts.md`.
 9. **Copy:** action titles (sentence, ≤ 15 words), ≤ 6 bullets, ≤ 70 words/slide, numbers with units, a source on data slides. No slop words (`src/qa/checks/content.ts`), no emoji, no "Thank you" closer — end on `nextSteps`.
-10. **Motion by intent:** `motion: "subtle"` (default) · `"build"` (click reveals) · `"keynote"` (Morph) · `"none"` (read-ahead). Never per-slide effect soup.
+10. **Motion by intent:** `motion: "subtle"` (default: fade transition, no builds) · `"build"` (click reveals) · `"keynote"` (Morph) · `"none"` (read-ahead). Never per-slide effect soup.
 
 ## Subagents
 

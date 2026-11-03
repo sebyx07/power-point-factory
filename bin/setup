@@ -21,7 +21,7 @@ done
 if [ ${#need[@]} -gt 0 ]; then
   warn "missing: ${need[*]}"
   echo "   Debian/Ubuntu: sudo apt install libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation"
-  echo "   Gelasio (Georgia twin): https://fonts.google.com/specimen/Gelasio → ~/.local/share/fonts && fc-cache -f"
+  echo "   Gelasio (Georgia twin): curl -fsSL -o ~/.local/share/fonts/Gelasio.ttf 'https://github.com/google/fonts/raw/main/ofl/gelasio/Gelasio%5Bwght%5D.ttf' && fc-cache -f"
   echo "   macOS: brew install --cask libreoffice && brew install poppler  (+ the fonts above)"
 else
   ok "LibreOffice, poppler, metric-compatible fonts present"

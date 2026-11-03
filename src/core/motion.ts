@@ -3,7 +3,8 @@ import type { EntranceEffect, Transition } from "./types";
 /**
  * Motion is chosen by intent, not per effect:
  *  none    — read-ahead / emailed decks: no builds, instant cuts
- *  subtle  — corporate default: fade transitions, quiet auto fades (≤ 0.4 s)
+ *  subtle  — corporate default: one calm fade transition, content arrives WITH the slide (no builds:
+ *            auto-cascading entrances read as text "loading"/flickering)
  *  build   — presenter reveals content click by click (bullets, chart, rows)
  *  keynote — Morph between slides (titles glide), rise entrances, longer timing
  */
@@ -43,17 +44,13 @@ export function motionSpec(profile: MotionProfile, themeTransition: Transition):
     case "keynote":
       return {
         transition: { type: "morph", duration: 800 },
-        build: { trigger: "auto", dur: 520, stagger: 170 },
+        build: { trigger: "auto", dur: 500, stagger: 250 },
         effect: (e) => (e === "fade" ? "rise" : e),
         morph: true,
       };
     default:
-      return {
-        transition: themeTransition,
-        build: { trigger: "auto", dur: 360, stagger: 110 },
-        effect: (e) => (e === "rise" || e === "zoom" ? "fade" : e),
-        morph: false,
-      };
+      // transition only: auto-cascading entrances after a transition read as text "loading" / flicker on enter
+      return { transition: themeTransition, build: null, effect: (e) => e, morph: false };
   }
 }
 

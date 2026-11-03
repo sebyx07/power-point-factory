@@ -48,6 +48,8 @@ test("injectSlide places transition+timing after clrMapOvr and resolves object n
 });
 test("motion profiles: none strips builds, keynote morphs", () => {
   expect(motionSpec("none", { type: "fade" }).build).toBeNull();
+  // default must not auto-build: transition + cascading fades flicker on slide enter
+  expect(motionSpec("subtle", { type: "fade" }).build).toBeNull();
   expect(motionSpec("keynote", { type: "fade" }).morph).toBe(true);
   expect(motionSpec("build", { type: "fade" }).build?.trigger).toBe("click");
 });

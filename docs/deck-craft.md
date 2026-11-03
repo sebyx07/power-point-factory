@@ -69,7 +69,7 @@ Sources: Minto pyramid / consulting practice, Duarte (Glance Test), Storytelling
 
 ## Motion
 
-- Corporate default `subtle`: fade transitions ≤ 0.5 s, quiet auto fades ≤ 0.4 s, 0.1 s stagger.
+- Corporate default `subtle`: one fade transition ≤ 0.5 s, no entrance builds (auto-cascades flicker on enter).
 - `build` when the presenter argues step by step (click reveals). `keynote` for launches (Morph). `none` for read-ahead/emailed decks.
 - Never: bounce, spin, fly-in, letter-by-letter, > 1 s effects, a different transition per slide.
 
