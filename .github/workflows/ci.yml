@@ -8,7 +8,7 @@ jobs:
     name: CI OK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: 1.4.4 }
       - name: System deps (renderer + metric-compatible fonts)
@@ -20,7 +20,7 @@ jobs:
           fc-cache -f
       - run: bun install --frozen-lockfile
       - run: bin/check
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: decks
