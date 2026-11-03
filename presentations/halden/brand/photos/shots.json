@@ -1,0 +1,26 @@
+[
+  {
+    "name": "dock-dawn",
+    "aspect": "16:9",
+    "model": "nano-banana-pro-2K",
+    "prompt": "Documentary photograph of a logistics loading dock at blue hour in western Sweden, three trucks backed into open bays with warm interior light spilling out, wet asphalt reflecting light, one worker in a dark high-visibility jacket walking away from camera, overcast sky, 35mm lens, slight grain, muted teal and grey palette, negative space in the upper left for text, no text, no logos"
+  },
+  {
+    "name": "cold-chain",
+    "aspect": "4:3",
+    "model": "nano-banana-pro-2K",
+    "prompt": "Editorial photograph inside a refrigerated pharmaceutical warehouse, rows of white insulated pallets with temperature data loggers, cool fluorescent light, a technician's gloved hand checking a label in the foreground, shallow depth of field, 50mm lens, clinical but warm, muted teal and white palette, no readable text, no logos"
+  },
+  {
+    "name": "planners",
+    "aspect": "3:2",
+    "model": "nano-banana-pro-2K",
+    "prompt": "Candid documentary photo of two transport planners at a depot desk reviewing a large printed route map with pencil marks, mugs and paperwork, overcast window light from the left, 35mm lens, f/2.8, natural skin texture, slightly cluttered, Scandinavian office, muted palette, faces partly turned away, no screens with text, no logos"
+  },
+  {
+    "name": "racks-detail",
+    "aspect": "1:1",
+    "model": "nano-banana-2-2K",
+    "prompt": "Close detail photograph of steel pallet racking with stretch-wrapped cartons, teal rack uprights, soft directional light, shallow depth of field, abstract and calm, muted teal and grey palette, product still life style, no text, no logos"
+  }
+]

@@ -1,0 +1,22 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+/tmp/*
+!/tmp/.keep
+# generated output (pptx, pdf, screenshots, QA) — reproducible from presentations/
+/out/**
+!/out/.keep
+# showcase ONLY: the Halden sample's deliverables are committed so you can see results without building.
+# Your own decks stay ignored. (Remove these lines in your fork if you want.)
+!/out/halden/
+!/out/halden/**/
+!/out/halden/**/*.pptx
+!/out/halden/**/*.pdf
+!/out/halden/**/contact-sheet.png
+!/out/halden/**/slides/*.png
+/out/halden/**/export/
+/out/halden/**/media/
+*.log
+.DS_Store
+~$*.pptx

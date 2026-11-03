@@ -1,0 +1,30 @@
+# PowerPoint Factory
+
+> Corporate-ready PowerPoint presentations as code. Typed Bun/TypeScript slide recipes → native editable .pptx (shapes, charts, tables, notes, titles, transitions, animations) → LibreOffice render to PDF/PNG → automatic QA. AI media via the Kubeez API. Built for AI agents (Claude Code) to write decks end to end.
+
+Start with CLAUDE.md (rules, commands, the deck loop). Decks live in presentations/<company>/<project>/<YYYY-MM-DD>/<deck>/ (deck.ts + slides/NN-name.ts, one slide per file); outputs in out/<same path>/. Run `bin/deck loop <deck>` and read out/<deck>/qa.md + contact-sheet.png.
+
+## Core docs
+- [CLAUDE.md](CLAUDE.md): agent rules, repo map, commands, the deck loop
+- [README.md](README.md): overview, quickstart, sample output
+- [docs/layouts.md](docs/layouts.md): every layout and its props
+- [docs/deck-craft.md](docs/deck-craft.md): story structure, exhibit choice, chart/table rules, anti-AI-slop
+- [docs/qa.md](docs/qa.md): every QA rule and its fix
+
+## Media
+- [docs/kubeez.md](docs/kubeez.md): Kubeez REST API (auth, async jobs, models, caching)
+- [docs/image-prompts.md](docs/image-prompts.md): prompts for images/video/music that don't look AI-made
+
+## Extending
+- [docs/extending.md](docs/extending.md): DSL primitives, custom layouts, brands, themes
+- [docs/motion.md](docs/motion.md): motion profiles (none/subtle/build/keynote), Morph, OOXML injection
+- [docs/libraries.md](docs/libraries.md): wrapped libraries and upgrade paths
+
+## Example
+- [presentations/halden/BRAND.md](presentations/halden/BRAND.md): a complete company brand brief
+- [presentations/halden/q4-business-review/2026-11-03/board-update/](presentations/halden/q4-business-review/2026-11-03/board-update/): a 21-slide board deck recipe
+- [out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf](out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf): its rendered output
+
+## Optional
+- [.claude/README.md](.claude/README.md): commands, agents, skills for Claude Code
+- [src/deck.ts](src/deck.ts): the public DSL surface

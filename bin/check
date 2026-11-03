@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# bin/check — THE gate (== CI): lint, typecheck, guards, unit tests, every deck through full QA.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+step(){ echo -e "\n\033[1m▸ $*\033[0m"; }
+step lint;       bunx biome check .
+step typecheck;  bunx tsc --noEmit -p tsconfig.json
+step guards;     bun scripts/lint/run.ts
+step test;       bun test
+step "decks qa"; bun scripts/deck/qa.ts all
+echo -e "\n\033[0;32m✔ all green\033[0m"

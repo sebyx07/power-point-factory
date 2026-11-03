@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# bin/setup — fresh clone → ready. Idempotent.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+ok(){ echo -e "\033[0;32m✔\033[0m  $*"; }
+warn(){ echo -e "\033[0;33m▲\033[0m  $*"; }
+
+command -v bun >/dev/null || { echo "bun not found → curl -fsSL https://bun.sh/install | bash"; exit 1; }
+bun install --frozen-lockfile 2>/dev/null || bun install
+ok "deps installed (bun $(bun --version))"
+
+[ -f .env ] || { cp .env.example .env; ok ".env created from .env.example — add KUBEEZ_API_KEY for AI images"; }
+
+need=()
+command -v soffice  >/dev/null || need+=(libreoffice-impress)
+command -v pdftoppm >/dev/null || need+=(poppler-utils)
+command -v fc-match >/dev/null || need+=(fontconfig)
+for f in Carlito Caladea "Liberation Sans" Gelasio; do
+  fc-match -f '%{family}' "$f" 2>/dev/null | grep -q "$f" || need+=("font:$f")
+done
+if [ ${#need[@]} -gt 0 ]; then
+  warn "missing: ${need[*]}"
+  echo "   Debian/Ubuntu: sudo apt install libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation"
+  echo "   Gelasio (Georgia twin): https://fonts.google.com/specimen/Gelasio → ~/.local/share/fonts && fc-cache -f"
+  echo "   macOS: brew install --cask libreoffice && brew install poppler  (+ the fonts above)"
+else
+  ok "LibreOffice, poppler, metric-compatible fonts present"
+fi
+mkdir -p tmp out
+bin/doctor || true
+echo; ok "Ready. Try: bin/deck loop presentations/halden/q4-business-review/2026-11-03/board-update"

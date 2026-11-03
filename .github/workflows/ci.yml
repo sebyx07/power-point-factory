@@ -1,0 +1,23 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: 1.4.4 }
+      - name: System deps (renderer + metric-compatible fonts)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation
+          mkdir -p ~/.local/share/fonts
+          for w in Regular Bold; do curl -fsSL -o ~/.local/share/fonts/Gelasio-$w.ttf "https://github.com/google/fonts/raw/main/ofl/gelasio/static/Gelasio-$w.ttf" || true; done
+          fc-cache -f
+      - run: bun install --frozen-lockfile
+      - run: bin/check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: decks, path: "out/**/{*.pdf,contact-sheet.png,qa.md}" }

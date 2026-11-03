@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# bin/deck <verb> [args] — one entrypoint, one verb per file in scripts/deck/.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+verb="${1:-help}"; shift || true
+if [[ "$verb" == "help" || ! -f "scripts/deck/$verb.ts" ]]; then
+  cat <<'USAGE'
+bin/deck — presentations as code
+
+  new <company> <project> <deck> [--theme cobalt|ledger|graphite|terracotta] [--date YYYY-MM-DD] [--title "…"]
+  loop    [deck]          build + full QA + screenshots, tells you what to look at   ← the agent loop
+  qa      [deck…|all]     same, CI-style output   (--fast: skip render · --strict: warnings fail)
+  build   [deck…|all]     recipe → .pptx only
+  watch   [deck]          rebuild + static QA on save   (--render for screenshots)
+  export  [deck…]         QA-gated .pptx + .pdf with a client-ready filename
+  approve [deck]          accept current screenshots as the visual baseline
+  list                    all presentations (+ last QA state)
+  open    [deck] [--pdf]  open the result
+
+  [deck] = presentations/<company>/<project>/<YYYY-MM-DD>/<deck>  (omitted → newest)
+  output → out/<company>/<project>/<YYYY-MM-DD>/<deck>/  (pptx, pdf, slides/*.png, contact-sheet.png, qa.md)
+USAGE
+  [[ "$verb" == "help" ]] && exit 0 || exit 2
+fi
+exec bun "scripts/deck/$verb.ts" "$@"

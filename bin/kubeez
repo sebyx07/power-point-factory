@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# bin/kubeez <verb> — Kubeez API from the shell (scripts/kubeez/<verb>.ts)
+set -euo pipefail
+cd "$(dirname "$0")/.."
+verb="${1:-help}"; shift || true
+if [[ "$verb" == "help" || ! -f "scripts/kubeez/$verb.ts" ]]; then
+  echo "bin/kubeez models [image|video|music|speech] | balance | brand-set <company> <shots.json> | generate \"prompt\" [--model m] [--aspect 16:9] [--out file.png] | status <id> | upload <file> | remove-bg <url|file>"
+  [[ "$verb" == "help" ]] && exit 0 || exit 2
+fi
+exec bun "scripts/kubeez/$verb.ts" "$@"
