@@ -4,7 +4,6 @@ What Claude Code loads when it works here. The gate is `bin/check`, not hooks.
 
 | Path                | Standing cost | Loaded when                                                                             |
 | ------------------- | ------------- | --------------------------------------------------------------------------------------- |
-| `settings.json`     | none          | session start: `bypassPermissions` — quality lives in `bin/check` + CI                  |
 | `../.mcp.json`      | none          | `kubeez` MCP (OAuth) for interactive media browsing; scripts use the REST key in `.env` |
 | `rules/<area>.md`   | none          | a file matching its `paths:` is touched                                                 |
 | `agents/*.md`       | one line each | dispatched                                                                              |
