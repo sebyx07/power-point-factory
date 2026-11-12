@@ -18,4 +18,4 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 
 ### Fixed
 
-- `bin/setup` no longer aborts when fontconfig is missing: it warns, skips the Gelasio (Georgia twin) install and proceeds to `bun install`; a failed Gelasio download warns instead of aborting setup.
+- `bin/setup` no longer aborts when fontconfig is missing: it warns, skips the Gelasio (Georgia twin) install and proceeds to `bun install`; a failed Gelasio download removes the partial file before warning, so a rerun retries instead of keeping a corrupt font registered by fc-cache.
