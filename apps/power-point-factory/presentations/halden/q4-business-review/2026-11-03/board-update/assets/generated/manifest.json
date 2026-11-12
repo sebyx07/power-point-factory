@@ -1,0 +1,30 @@
+[
+  {
+    "file": "3d274df2636d08c1.jpg",
+    "kind": "image",
+    "prompt": "Aerial drone photograph of a large flat-roofed logistics building under construction beside a highway in southern Sweden, late afternoon low sun, long shadows, pine forest edges, trucks at loading docks, realistic, muted natural colors, high detail, no text, no logos",
+    "model": "nano-banana-pro-2K",
+    "params": {
+      "aspect": "16:9",
+      "seed": 0,
+      "removeBackground": false
+    },
+    "generationId": "8bc2368c-06ae-4e67-a79d-ff57cc11244c",
+    "credits": 24,
+    "createdAt": "2026-11-03T13:18:09.009Z"
+  },
+  {
+    "file": "b6b66689faf5fdc4.jpg",
+    "kind": "image",
+    "prompt": "Editorial photograph, interior of a modern Scandinavian logistics warehouse at dawn, tall pallet racks receding, one worker in a dark jacket checking a tablet, cool natural light through high windows, muted teal and grey palette, 35mm lens, shallow depth of field, documentary style, no text",
+    "model": "nano-banana-pro-2K",
+    "params": {
+      "aspect": "3:4",
+      "seed": 0,
+      "removeBackground": false
+    },
+    "generationId": "e3f9456d-6f26-47f3-8fbe-8c0c2ce3566d",
+    "credits": 24,
+    "createdAt": "2026-11-03T13:18:13.530Z"
+  }
+]

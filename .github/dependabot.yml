@@ -4,7 +4,7 @@ version: 2
 # proposed, so broken or compromised releases are usually yanked first. Security updates skip it.
 updates:
   - package-ecosystem: bun
-    directory: /
+    directory: /apps/power-point-factory
     schedule:
       interval: weekly
       day: monday

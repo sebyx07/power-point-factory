@@ -2,7 +2,7 @@
 # bin/kubeez <verb> — Kubeez API from the shell (scripts/kubeez/<verb>.ts)
 set -euo pipefail
 export DECK_CWD="${DECK_CWD:-$PWD}"
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../apps/power-point-factory"
 verb="${1:-help}"; shift || true
 if [[ "$verb" == "help" || ! -f "scripts/kubeez/$verb.ts" ]]; then
   echo "bin/kubeez models [image|video|music|speech] | balance | brand-set <company> <shots.json> | generate \"prompt\" [--model m] [--aspect 16:9] [--out file.png] | status <id> | upload <file> | remove-bg <url|file>"

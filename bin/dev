@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # one-command dev — established by dz-runner setup mode. One command; adjust as the repo grows.
 set -euo pipefail
-cd "$(dirname "$0")/.."
-bin/deck loop
+root="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$root/apps/power-point-factory"
+exec "$root/bin/deck" loop

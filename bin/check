@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # bin/check — THE gate (== CI): lint, typecheck, guards, unit tests, every deck through full QA.
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../apps/power-point-factory"
 step(){ echo -e "\n\033[1m▸ $*\033[0m"; }
 step lint;       bunx biome check .
 step typecheck;  bunx tsc --noEmit -p tsconfig.json

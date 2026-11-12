@@ -1,0 +1,40 @@
+// bin/check guards step: repo-specific rules Biome can't express. Each guard is a pure fn + test.
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { deadLinks } from "./doc-links";
+import { declared, envReads } from "./env-in-example";
+import { MAX, offenders } from "./max-file-loc";
+import { bareErrors } from "./no-bare-error";
+
+const files = [...new Bun.Glob("{src,scripts}/**/*.ts").scanSync(".")].filter((f) => !f.endsWith(".test.ts"));
+let bad = 0;
+const fail = (rule: string, lines: string[], fix: string) => {
+  if (lines.length === 0) return;
+  bad++;
+  console.error(`✖ ${rule}\n${lines.map((l) => `  ${l}`).join("\n")}\n  → ${fix}`);
+};
+
+fail(
+  "max-file-loc",
+  offenders(files).map((o) => `${o.file}: ${o.lines} lines`),
+  `split the file (≤ ${MAX} lines, one job per file)`,
+);
+const ex = declared(readFileSync(".env.example", "utf8"));
+fail(
+  "env-in-example",
+  [...envReads(files)].filter((n) => !ex.has(n)),
+  "declare it in .env.example with a one-line comment",
+);
+fail("no-bare-error", bareErrors(files), "throw a DeckError subclass from src/core/errors.ts with a hint");
+// .claude/, docs/ and root *.md stay at the repo root; bin/check runs from the app dir, so scan them there too.
+const REPO = resolve(import.meta.dir, "../../../..");
+const docs = [
+  ...new Bun.Glob("{*.md,llms.txt,docs/**/*.md,.claude/**/*.md,.dz/**/*.md,presentations/*/BRAND.md,presentations/*/brand/*.md}").scanSync({
+    cwd: ".",
+    dot: true,
+  }),
+  ...new Bun.Glob("{*.md,docs/**/*.md,.claude/**/*.md,.dz/**/*.md}").scanSync({ cwd: REPO, dot: true }),
+];
+fail("doc-links", deadLinks(docs), "fix or remove the link (relative to the file it is in)");
+if (!bad) console.log("✔ guards: max-file-loc, env-in-example, no-bare-error, doc-links");
+process.exit(bad ? 1 : 0);

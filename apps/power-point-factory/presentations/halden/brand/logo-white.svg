@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="200" viewBox="0 0 880 200" role="img" aria-label="Halden Logistics">
+  <title>Halden Logistics</title>
+  <!-- Halden Logistics (fictional sample brand) — mark: stacked pallet chevrons -->
+  <g fill="#3FC1B4">
+    <path d="M20 150 L80 120 L140 150 L80 180 Z"/>
+    <path d="M20 105 L80 75 L140 105 L80 135 Z" opacity="0.7"/>
+    <path d="M20 60 L80 30 L140 60 L80 90 Z" opacity="0.45"/>
+  </g>
+  <text x="175" y="128" font-family="Liberation Sans, Arial, sans-serif" font-size="84" font-weight="700" fill="#FFFFFF" letter-spacing="2">HALDEN</text>
+  <text x="178" y="168" font-family="Liberation Sans, Arial, sans-serif" font-size="30" fill="#A9B4C8" letter-spacing="9">LOGISTICS</text>
+</svg>

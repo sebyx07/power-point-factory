@@ -4,20 +4,22 @@ node_modules/
 .env.*.local
 /tmp/*
 !/tmp/.keep
+# app-side scratch: QA LibreOffice profiles + test caches
+/apps/power-point-factory/tmp/*
 # generated output (pptx, pdf, screenshots, QA) — reproducible from presentations/
-/out/**
-!/out/.keep
+/apps/power-point-factory/out/**
+!/apps/power-point-factory/out/.keep
 # showcase ONLY: the Halden sample's deliverables are committed so you can see results without building.
 # Your own decks stay ignored. (Remove these lines in your fork if you want.)
-!/out/halden/
-!/out/halden/q4-business-review/
-!/out/halden/q4-business-review/2026-11-03/
-!/out/halden/q4-business-review/2026-11-03/board-update/
-!/out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx
-!/out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf
-!/out/halden/q4-business-review/2026-11-03/board-update/board-update-contact-sheet.png
-!/out/halden/q4-business-review/2026-11-03/board-update/slides/
-!/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-*.png
+!/apps/power-point-factory/out/halden/
+!/apps/power-point-factory/out/halden/q4-business-review/
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/board-update-contact-sheet.png
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/
+!/apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-*.png
 *.log
 .DS_Store
 ~$*.pptx

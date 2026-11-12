@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # bin/setup — fresh clone → ready. Idempotent. Installs the OS deps the QA renderer needs (same set as CI).
 set -euo pipefail
-cd "$(dirname "$0")/.."
+root="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$root/apps/power-point-factory"
 ok(){ echo -e "\033[0;32m✔\033[0m  $*"; }
 warn(){ echo -e "\033[0;33m▲\033[0m  $*"; }
 
@@ -40,5 +41,5 @@ ok "deps installed (bun $(bun --version))"
 [ -f .env ] || { cp .env.example .env; ok ".env created from .env.example — add KUBEEZ_API_KEY for AI images"; }
 
 mkdir -p tmp out
-bin/doctor || true
+"$root/bin/doctor" || true
 echo; ok "Ready. Try: bin/deck loop presentations/halden/q4-business-review/2026-11-03/board-update"

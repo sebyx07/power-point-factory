@@ -18,13 +18,13 @@ jobs:
           mkdir -p ~/.local/share/fonts
           curl -fsSL -o ~/.local/share/fonts/Gelasio.ttf "https://github.com/google/fonts/raw/main/ofl/gelasio/Gelasio%5Bwght%5D.ttf"
           fc-cache -f
-      - run: bun install --frozen-lockfile
+      - run: cd apps/power-point-factory && bun install --frozen-lockfile
       - run: bin/check
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: decks
           path: |
-            out/**/*.pdf
-            out/**/*-contact-sheet.png
-            out/**/*-qa.md
+            apps/power-point-factory/out/**/*.pdf
+            apps/power-point-factory/out/**/*-contact-sheet.png
+            apps/power-point-factory/out/**/*-qa.md

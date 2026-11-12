@@ -8,15 +8,15 @@ Developers (and their Claude agents) describe slides as small typed recipes. The
 
 From the everyday status update to the launch keynote: same recipes, different motion profile.
 
-![The sample board deck — all 20 slides](out/halden/q4-business-review/2026-11-03/board-update/board-update-contact-sheet.png)
+![The sample board deck — all 20 slides](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/board-update-contact-sheet.png)
 
-> **See the result without building anything:** [`board-update.pptx`](out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx) · [`board-update.pdf`](out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf) · [slide PNGs](out/halden/q4-business-review/2026-11-03/board-update/slides/) — a 20-slide Q4 board review for _Halden Logistics_ (a fictional company), with real Kubeez photography.
+> **See the result without building anything:** [`board-update.pptx`](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/board-update.pptx) · [`board-update.pdf`](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/board-update.pdf) · [slide PNGs](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/) — a 20-slide Q4 board review for _Halden Logistics_ (a fictional company), with real Kubeez photography.
 
 |                                                                                |                                                                                |                                                                                |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-01.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-06.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-08.png) |
+| ![](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-01.png) | ![](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-06.png) | ![](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-08.png) |
 | Cover with generated photo + logo                                              | Waterfall bridge (native shapes)                                               | Native table, highlight + total rows                                           |
-| ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-13.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-14.png) | ![](out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-18.png) |
+| ![](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-13.png) | ![](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-14.png) | ![](apps/power-point-factory/out/halden/q4-business-review/2026-11-03/board-update/slides/board-update-18.png) |
 | 2×2 prioritization matrix                                                      | Gantt roadmap with "today" line                                                | Decisions: action · owner · date · RAG                                         |
 
 ## Make it yours: a private copy
@@ -117,7 +117,7 @@ Built for Claude Code (works with any agent that reads `AGENTS.md`):
 - `/deck <company> <brief>` — brief → ghost deck → recipe → QA loop → fresh-eyes review → export.
 - `/review-deck` — independent verdict from screenshots.
 - Agents `deck-reviewer` (story + design) and `brand-reviewer` (claims vs `BRAND.md`); skills `onboard-company`, `add-layout`, `kubeez-media`. See [`.claude/README.md`](.claude/README.md).
-- [`llms.txt`](llms.txt) for any LLM landing in the repo.
+- [`llms.txt`](apps/power-point-factory/llms.txt) for any LLM landing in the repo.
 
 ## Docs
 
