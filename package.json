@@ -11,7 +11,9 @@
     "check": "bin/check",
     "doctor": "bin/doctor",
     "deck": "bin/deck",
-    "loop": "bin/deck loop"
+    "loop": "bin/deck loop",
+    "dev": "bin/dev",
+    "stop": "bin/stop"
   },
   "dependencies": {
     "fast-xml-parser": "^5.12.0",
