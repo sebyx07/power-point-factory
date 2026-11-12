@@ -12,10 +12,17 @@ command -v bun >/dev/null || { echo "bun not found → curl -fsSL https://bun.sh
 sys="libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation"
 if command -v dpkg >/dev/null 2>&1; then
   if ! dpkg -s $sys >/dev/null 2>&1; then
-    sudo -n apt-get update -qq
-    sudo -n apt-get install -y -qq --no-install-recommends $sys
+    if sudo -n true 2>/dev/null; then
+      sudo -n apt-get update -qq
+      sudo -n apt-get install -y -qq --no-install-recommends $sys
+    else
+      warn "no passwordless sudo — skipping system-dep install; run manually:"
+      echo "   sudo apt-get install -y $sys"
+    fi
   fi
-  ok "system deps present (LibreOffice, poppler, metric-compatible fonts)"
+  if dpkg -s $sys >/dev/null 2>&1; then
+    ok "system deps present (LibreOffice, poppler, metric-compatible fonts)"
+  fi
 elif ! command -v soffice >/dev/null 2>&1 || ! command -v pdftoppm >/dev/null 2>&1; then
   warn "missing LibreOffice/poppler"
   echo "   macOS: brew install --cask libreoffice && brew install poppler fontconfig"
