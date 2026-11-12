@@ -28,9 +28,12 @@ elif ! command -v soffice >/dev/null 2>&1 || ! command -v pdftoppm >/dev/null 2>
   echo "   macOS: brew install --cask libreoffice && brew install poppler fontconfig"
 fi
 
-if ! fc-match -f '%{family}' Gelasio 2>/dev/null | grep -q Gelasio; then
+if ! command -v fc-match >/dev/null 2>&1 || ! command -v fc-cache >/dev/null 2>&1; then
+  warn "no fc-match/fc-cache (fontconfig) — skipping Gelasio (Georgia twin) install"
+  echo "   install fontconfig, then rerun bin/setup to fetch it"
+elif ! fc-match -f '%{family}' Gelasio 2>/dev/null | grep -q Gelasio; then
   mkdir -p ~/.local/share/fonts
-  curl -fsSL -o ~/.local/share/fonts/Gelasio.ttf "https://github.com/google/fonts/raw/main/ofl/gelasio/Gelasio%5Bwght%5D.ttf"
+  curl -fsSL -o ~/.local/share/fonts/Gelasio.ttf "https://github.com/google/fonts/raw/main/ofl/gelasio/Gelasio%5Bwght%5D.ttf" || { rm -f ~/.local/share/fonts/Gelasio.ttf; warn "Gelasio download failed — continuing; rerun bin/setup to retry"; }
   fc-cache -f >/dev/null
 fi
 

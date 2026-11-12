@@ -14,3 +14,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [S
 - Kubeez images, cut-outs, video and music with a commit-friendly cache: deduped, resumable after crashes, never billed twice.
 - Byte-reproducible `.pptx` and `.pdf` builds.
 - Company brand folders (`BRAND.md`, `brand.ts`, `brand/`, `layouts/`), the Halden Logistics showcase, Claude Code setup (`/deck`, `/review-deck`, reviewer agents, skills), developerz.ai maintainer config.
+- `package.json` dev/stop scripts (`bun run dev` → `bin/dev`, `bun run stop` → `bin/stop`).
+
+### Fixed
+
+- `bin/setup` no longer aborts when fontconfig is missing: it warns, skips the Gelasio (Georgia twin) install and proceeds to `bun install`; a failed Gelasio download removes the partial file before warning, so a rerun retries instead of keeping a corrupt font registered by fc-cache.
