@@ -1,32 +1,44 @@
 #!/usr/bin/env bash
-# bin/setup — fresh clone → ready. Idempotent.
+# bin/setup — fresh clone → ready. Idempotent. Installs the OS deps the QA renderer needs (same set as CI).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ok(){ echo -e "\033[0;32m✔\033[0m  $*"; }
 warn(){ echo -e "\033[0;33m▲\033[0m  $*"; }
 
 command -v bun >/dev/null || { echo "bun not found → curl -fsSL https://bun.sh/install | bash"; exit 1; }
+
+# OS deps: LibreOffice (headless .pptx → pdf render), poppler (pdftoppm screenshots), fontconfig,
+# metric-compatible fonts. Same set CI installs (.github/workflows/ci.yml); Gelasio (Georgia twin) is not in apt.
+sys="libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation"
+if command -v dpkg >/dev/null 2>&1; then
+  if ! dpkg -s $sys >/dev/null 2>&1; then
+    if sudo -n true 2>/dev/null; then
+      sudo -n apt-get update -qq
+      sudo -n apt-get install -y -qq --no-install-recommends $sys
+    else
+      warn "no passwordless sudo — skipping system-dep install; run manually:"
+      echo "   sudo apt-get install -y $sys"
+    fi
+  fi
+  if dpkg -s $sys >/dev/null 2>&1; then
+    ok "system deps present (LibreOffice, poppler, metric-compatible fonts)"
+  fi
+elif ! command -v soffice >/dev/null 2>&1 || ! command -v pdftoppm >/dev/null 2>&1; then
+  warn "missing LibreOffice/poppler"
+  echo "   macOS: brew install --cask libreoffice && brew install poppler fontconfig"
+fi
+
+if ! fc-match -f '%{family}' Gelasio 2>/dev/null | grep -q Gelasio; then
+  mkdir -p ~/.local/share/fonts
+  curl -fsSL -o ~/.local/share/fonts/Gelasio.ttf "https://github.com/google/fonts/raw/main/ofl/gelasio/Gelasio%5Bwght%5D.ttf"
+  fc-cache -f >/dev/null
+fi
+
 bun install --frozen-lockfile
 ok "deps installed (bun $(bun --version))"
 
 [ -f .env ] || { cp .env.example .env; ok ".env created from .env.example — add KUBEEZ_API_KEY for AI images"; }
 
-need=()
-command -v soffice  >/dev/null || need+=(libreoffice-impress)
-command -v pdftoppm >/dev/null || need+=(poppler-utils)
-command -v fc-match >/dev/null || need+=(fontconfig)
-for f in Carlito Caladea "Liberation Sans" Gelasio; do
-  fc-match -f '%{family}' "$f" 2>/dev/null | grep -q "$f" || need+=("font:$f")
-done
-if [ ${#need[@]} -gt 0 ]; then
-  warn "missing: ${need[*]}"
-  echo "   Debian/Ubuntu: sudo apt install libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation"
-  echo "   Gelasio (Georgia twin): curl -fsSL -o ~/.local/share/fonts/Gelasio.ttf 'https://github.com/google/fonts/raw/main/ofl/gelasio/Gelasio%5Bwght%5D.ttf' && fc-cache -f"
-  echo "   macOS: brew install --cask libreoffice && brew install poppler fontconfig"
-  echo "          brew install --cask font-carlito font-caladea font-liberation font-gelasio"
-else
-  ok "LibreOffice, poppler, metric-compatible fonts present"
-fi
 mkdir -p tmp out
 bin/doctor || true
 echo; ok "Ready. Try: bin/deck loop presentations/halden/q4-business-review/2026-11-03/board-update"
