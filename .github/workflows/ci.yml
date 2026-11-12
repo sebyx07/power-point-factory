@@ -2,14 +2,17 @@ name: ci
 on:
   push: { branches: [main] }
   pull_request:
+permissions:
+  contents: read
+
 jobs:
   check:
     # the required check the maintainer merges on (.dz/maintainer/maintainer.yml)
     name: CI OK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with: { bun-version: 1.4.4 }
       - name: System deps (renderer + metric-compatible fonts)
         run: |
@@ -20,7 +23,7 @@ jobs:
           fc-cache -f
       - run: bun install --frozen-lockfile
       - run: bin/check
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         with:
           name: decks
