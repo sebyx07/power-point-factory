@@ -18,7 +18,7 @@
   "dependencies": {
     "fast-xml-parser": "^5.12.0",
     "jszip": "^3.10.2",
-    "lucide-static": "^1.67.0",
+    "lucide-static": "^1.70.0",
     "opentype.js": "^2.0.0",
     "pixelmatch": "^8.0.0",
     "pptxgenjs": "^4.0.1",
