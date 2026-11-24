@@ -140,19 +140,24 @@ test("dependency audit checks transitive and nested image-size resolutions and m
       Object.assign(malformed.packages, { "image-size": tuple });
       expect((await run(malformed)).code).not.toBe(0);
     }
-    for (const key of ["broken/", "/broken", "broken//child", "@scope/", "broken/@scope/"]) {
+    for (const key of ["broken/", "/broken", "broken//child", "@scope/", "broken/@scope/", "bad key", "@bad scope/parent", "parent/@scope/bad key"]) {
       const malformed = fixture("2.0.3");
-      Object.assign(malformed.packages, { [key]: ["broken@1.0.0", "", { dependencies: { missing: "*" } }, ""] });
+      Object.assign(malformed.packages, { [key]: ["broken@1.0.0", "", {}, ""] });
       const result = await run(malformed);
       expect(result.code).not.toBe(0);
-      expect(result.output).toContain("Invalid package");
+      expect(result.output).toContain(`Invalid package key ${key}`);
     }
     const nested = fixture("2.0.3");
     Object.assign(nested.packages, { "pptxgenjs/image-size": ["image-size@1.2.1", "", {}, ""] });
     expect((await run(nested)).output).toContain("pptxgenjs@4.0.1 -> image-size@1.2.1");
     const scoped = fixture("2.0.3");
-    Object.assign(scoped.packages, { "@scope/parent/@other/child": ["@other/child@1.0.0", "", { dependencies: { "image-size": "*" } }, ""] });
-    expect((await run(scoped)).code).toBe(0);
+    Object.assign(scoped.packages, {
+      "@scope/parent/@other/child": ["@other/child@1.0.0", "", { dependencies: { "image-size": "*" } }, ""],
+      "@scope/parent/image-size": ["image-size@1.2.1", "", {}, ""],
+    });
+    const scopedResult = await run(scoped);
+    expect(scopedResult.code).not.toBe(0);
+    expect(scopedResult.output).toContain("locked @scope/parent/@other/child -> @other/child@1.0.0 -> image-size@1.2.1");
     expect((await run("{ broken")).code).not.toBe(0);
     expect((await run({ lockfileVersion: 2, workspaces: { "": {} }, packages: { "image-size": ["image-size@garbage"] } })).code).not.toBe(0);
     expect((await run({ lockfileVersion: 2, workspaces: { "": { dependencies: { missing: "*" } } }, packages: {} })).code).not.toBe(0);
