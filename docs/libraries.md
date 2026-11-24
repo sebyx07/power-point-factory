@@ -15,6 +15,14 @@
 | AI media                 | **Kubeez REST**                                               | `src/assets/kubeez/*`                     | one API for image, video, music, cut-outs; async jobs; CDN-optimized outputs         | per-vendor SDKs (OpenAI, Google, Runway…)                                                                                                                                           |
 | Lint/format              | **Biome**                                                     | `bin/check`                               | one fast tool                                                                        | ESLint + Prettier                                                                                                                                                                   |
 
+## Dependency audit and image processing risk
+
+Run `bun audit` separately from `bin/check`. The audit is opt-in and is expected to exit nonzero while the current lockfile contains the vulnerable dependency path `power-point` → `pptxgenjs@4.0.1` → `image-size@1.2.1`. The relevant advisories are [GHSA-w3rx-r6r6-pgpr](https://github.com/advisories/GHSA-w3rx-r6r6-pgpr) and [GHSA-5p2g-fcmc-qvqq](https://github.com/advisories/GHSA-5p2g-fcmc-qvqq). Both list `image-size@2.0.3` as patched, and that release is published, but it is outside pptxgenjs 4.0.1's `^1.2.1` dependency range. A compatible resolution or a tested pptxgenjs upgrade is needed; publication alone does not establish compatibility.
+
+In the normal asset pipeline, `src/assets/resolve.ts` reads local image files, generated or cached Kubeez images, icons, and placeholders, then uses sharp to inspect and resize them and writes PNG or JPEG. `src/assets/resolve-media.ts` reads local or generated video posters, or creates placeholders, and uses sharp to resize them to PNG. `src/render/pptx.ts` passes the resolved image path to `addImage`, and passes the resolved poster either to `addImage` for placeholder media or as a PNG cover to `addMedia`.
+
+This preprocessing limits what reaches pptxgenjs on those pipeline paths, but reaching pptxgenjs does not establish a call into the affected image-size JXL, HEIF or ICNS parsers. A scan of the installed pptxgenjs JavaScript found no image-size references, and one Node rendering run reported `render completed, image-size cache: 0`. These observations do not establish reachability for every execution path or other consumers of image-size. They also do not establish that direct renderer callers or all malicious input paths are safe. The vulnerable transitive dependency remains installed, and denial of service remains a risk. Treat untrusted assets and direct renderer inputs accordingly.
+
 ## Upgrade paths, when needed
 
 - **Client templates (.potx/.pptx masters):** add `pptx-automizer` behind `src/render/template.ts` to place our scenes into a client's master slides.

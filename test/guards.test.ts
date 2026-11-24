@@ -94,3 +94,40 @@ test("table overflow: a wrapping cell that pushes the table into the footer is a
   };
   expect(tables(scene).map((f) => f.rule)).toContain("table-overflow");
 });
+
+test("dependency audit checks transitive and nested image-size resolutions and malformed locks", async () => {
+  const { mkdtemp, rm } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const dir = await mkdtemp(join(tmpdir(), "dependency-audit-"));
+  const lockPath = join(dir, "bun.lock");
+  const run = async (lock: unknown) => {
+    await Bun.write(lockPath, typeof lock === "string" ? lock : JSON.stringify(lock));
+    const proc = Bun.spawn([process.execPath, "scripts/lint/dependency-check.ts", lockPath], { stdout: "pipe", stderr: "pipe" });
+    return { code: await proc.exited, output: `${await new Response(proc.stdout).text()}${await new Response(proc.stderr).text()}` };
+  };
+  const fixture = (version: string) => ({
+    lockfileVersion: 2,
+    workspaces: { "": { name: "fixture", dependencies: { pptxgenjs: "^4.0.1" } } },
+    packages: {
+      pptxgenjs: ["pptxgenjs@4.0.1", "", { dependencies: { "image-size": "*" } }, ""],
+      "image-size": [`image-size@${version}`, "", {}, ""],
+    },
+  });
+  try {
+    const vulnerable = await run(fixture("1.2.1"));
+    expect(vulnerable.code).not.toBe(0);
+    expect(vulnerable.output).toContain("pptxgenjs@4.0.1 -> image-size@1.2.1");
+    expect(vulnerable.output).toContain("GHSA-w3rx-r6r6-pgpr");
+    expect(vulnerable.output).toContain("GHSA-5p2g-fcmc-qvqq");
+    expect((await run(fixture("2.0.3"))).code).toBe(0);
+    const nested = fixture("2.0.3");
+    Object.assign(nested.packages, { "pptxgenjs/image-size": ["image-size@1.2.1", "", {}, ""] });
+    expect((await run(nested)).output).toContain("pptxgenjs@4.0.1 -> image-size@1.2.1");
+    expect((await run("{ broken")).code).not.toBe(0);
+    expect((await run({ lockfileVersion: 2, workspaces: { "": {} }, packages: { "image-size": ["image-size@garbage"] } })).code).not.toBe(0);
+    expect((await run({ lockfileVersion: 2, workspaces: { "": { dependencies: { missing: "*" } } }, packages: {} })).code).not.toBe(0);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
