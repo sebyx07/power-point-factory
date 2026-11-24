@@ -151,12 +151,8 @@ test("dependency audit checks transitive and nested image-size resolutions and m
       "parent/@scope/bad key",
       "@scope/.",
       "@scope/..",
-      "@./child",
-      "@../child",
       "parent/@scope/.",
       "parent/@scope/..",
-      "parent/@./child",
-      "parent/@../child",
     ]) {
       const malformed = fixture("2.0.3");
       Object.assign(malformed.packages, { [key]: ["broken@1.0.0", "", {}, ""] });
@@ -189,9 +185,20 @@ test("dependency audit checks transitive and nested image-size resolutions and m
     const hoistedResult = await run(hoisted);
     expect(hoistedResult.code).not.toBe(0);
     expect(hoistedResult.output).toContain("root -> @scope/parent@1.0.0 -> @other/child@1.0.0 -> image-size@1.2.1");
-    for (const name of ["@scope/_helper", "@_scope/helper", "@scope/.helper", "@scope/helper~extra", "@scope!/'helper(*)"]) {
+    for (const name of [
+      "@scope/_helper",
+      "@_scope/helper",
+      "@scope/.helper",
+      "@scope/helper~extra",
+      "@scope!/'helper(*)",
+      "@./child",
+      "@../child",
+      "parent/@./child",
+      "parent/@../child",
+    ]) {
       const valid = fixture("2.0.3");
-      Object.assign(valid.packages, { [name]: [`${name}@1.0.0`, "", {}, ""] });
+      const resolution = name.startsWith("parent/") ? name.slice("parent/".length) : name;
+      Object.assign(valid.packages, { [name]: [`${resolution}@1.0.0`, "", {}, ""] });
       const result = await run(valid);
       expect(result.output).toContain("No affected image-size resolutions");
       expect(result.code).toBe(0);
