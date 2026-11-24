@@ -34,7 +34,11 @@ function audit(raw: unknown): string[] {
   const packages = object(lock.packages, "packages");
   const entries = new Map<string, { name: string; version: string; deps: string[] }>();
   for (const [key, value] of Object.entries(packages)) {
-    if (!/^(?:@[A-Za-z0-9][A-Za-z0-9._-]*\/)?[A-Za-z0-9][A-Za-z0-9._-]*(?:\/(?:@[A-Za-z0-9][A-Za-z0-9._-]*\/)?[A-Za-z0-9][A-Za-z0-9._-]*)*$/.test(key)) {
+    if (
+      !/^(?:@[A-Za-z0-9._~!'()*-]+\/[A-Za-z0-9._~!'()*-]+|[A-Za-z0-9~!'()*-][A-Za-z0-9._~!'()*-]*)(?:\/(?:@[A-Za-z0-9._~!'()*-]+\/[A-Za-z0-9._~!'()*-]+|[A-Za-z0-9~!'()*-][A-Za-z0-9._~!'()*-]*))*$/.test(
+        key,
+      )
+    ) {
       throw `Invalid package key ${key}`;
     }
     if (!Array.isArray(value) || value.length !== 4 || typeof value[0] !== "string" || typeof value[1] !== "string" || typeof value[3] !== "string") {

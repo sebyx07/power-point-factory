@@ -158,6 +158,18 @@ test("dependency audit checks transitive and nested image-size resolutions and m
     const scopedResult = await run(scoped);
     expect(scopedResult.code).not.toBe(0);
     expect(scopedResult.output).toContain("locked @scope/parent/@other/child -> @other/child@1.0.0 -> image-size@1.2.1");
+    const hoisted = fixture("2.0.3");
+    Object.assign(hoisted.packages, {
+      "@scope/parent/@other/child": ["@other/child@1.0.0", "", { dependencies: { "image-size": "*" } }, ""],
+    });
+    expect((await run(hoisted)).code).toBe(0);
+    for (const name of ["@scope/_helper", "@_scope/helper", "@scope/.helper", "@scope/helper~extra", "@scope!/'helper(*)"]) {
+      const valid = fixture("2.0.3");
+      Object.assign(valid.packages, { [name]: [`${name}@1.0.0`, "", {}, ""] });
+      const result = await run(valid);
+      expect(result.output).toContain("No affected image-size resolutions");
+      expect(result.code).toBe(0);
+    }
     expect((await run("{ broken")).code).not.toBe(0);
     expect((await run({ lockfileVersion: 2, workspaces: { "": {} }, packages: { "image-size": ["image-size@garbage"] } })).code).not.toBe(0);
     expect((await run({ lockfileVersion: 2, workspaces: { "": { dependencies: { missing: "*" } } }, packages: {} })).code).not.toBe(0);
