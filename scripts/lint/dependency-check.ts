@@ -37,7 +37,8 @@ function audit(raw: unknown): string[] {
     if (
       !/^(?:@[A-Za-z0-9._~!'()*-]+\/[A-Za-z0-9._~!'()*-]+|[A-Za-z0-9~!'()*-][A-Za-z0-9._~!'()*-]*)(?:\/(?:@[A-Za-z0-9._~!'()*-]+\/[A-Za-z0-9._~!'()*-]+|[A-Za-z0-9~!'()*-][A-Za-z0-9._~!'()*-]*))*$/.test(
         key,
-      )
+      ) ||
+      key.split("/").some((segment) => [".", ".."].includes(segment.startsWith("@") ? segment.slice(1) : segment))
     ) {
       throw `Invalid package key ${key}`;
     }

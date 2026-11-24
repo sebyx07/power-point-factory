@@ -140,7 +140,24 @@ test("dependency audit checks transitive and nested image-size resolutions and m
       Object.assign(malformed.packages, { "image-size": tuple });
       expect((await run(malformed)).code).not.toBe(0);
     }
-    for (const key of ["broken/", "/broken", "broken//child", "@scope/", "broken/@scope/", "bad key", "@bad scope/parent", "parent/@scope/bad key"]) {
+    for (const key of [
+      "broken/",
+      "/broken",
+      "broken//child",
+      "@scope/",
+      "broken/@scope/",
+      "bad key",
+      "@bad scope/parent",
+      "parent/@scope/bad key",
+      "@scope/.",
+      "@scope/..",
+      "@./child",
+      "@../child",
+      "parent/@scope/.",
+      "parent/@scope/..",
+      "parent/@./child",
+      "parent/@../child",
+    ]) {
       const malformed = fixture("2.0.3");
       Object.assign(malformed.packages, { [key]: ["broken@1.0.0", "", {}, ""] });
       const result = await run(malformed);
@@ -158,11 +175,20 @@ test("dependency audit checks transitive and nested image-size resolutions and m
     const scopedResult = await run(scoped);
     expect(scopedResult.code).not.toBe(0);
     expect(scopedResult.output).toContain("locked @scope/parent/@other/child -> @other/child@1.0.0 -> image-size@1.2.1");
-    const hoisted = fixture("2.0.3");
+    const hoisted = {
+      lockfileVersion: 2,
+      workspaces: { "": { dependencies: { "@scope/parent": "*" } } },
+      packages: {
+        "@scope/parent": ["@scope/parent@1.0.0", "", { dependencies: { "@other/child": "*" } }, ""],
+        "image-size": ["image-size@1.2.1", "", {}, ""],
+      },
+    };
     Object.assign(hoisted.packages, {
       "@scope/parent/@other/child": ["@other/child@1.0.0", "", { dependencies: { "image-size": "*" } }, ""],
     });
-    expect((await run(hoisted)).code).toBe(0);
+    const hoistedResult = await run(hoisted);
+    expect(hoistedResult.code).not.toBe(0);
+    expect(hoistedResult.output).toContain("root -> @scope/parent@1.0.0 -> @other/child@1.0.0 -> image-size@1.2.1");
     for (const name of ["@scope/_helper", "@_scope/helper", "@scope/.helper", "@scope/helper~extra", "@scope!/'helper(*)"]) {
       const valid = fixture("2.0.3");
       Object.assign(valid.packages, { [name]: [`${name}@1.0.0`, "", {}, ""] });
