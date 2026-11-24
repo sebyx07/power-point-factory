@@ -103,7 +103,11 @@ test("dependency audit checks transitive and nested image-size resolutions and m
   const lockPath = join(dir, "bun.lock");
   const run = async (lock: unknown) => {
     await Bun.write(lockPath, typeof lock === "string" ? lock : JSON.stringify(lock));
-    const proc = Bun.spawn([process.execPath, "scripts/lint/dependency-check.ts", lockPath], { stdout: "pipe", stderr: "pipe" });
+    const proc = Bun.spawn([process.execPath, "scripts/lint/dependency-check.ts", lockPath], {
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout: 2000,
+    });
     return { code: await proc.exited, output: `${await new Response(proc.stdout).text()}${await new Response(proc.stderr).text()}` };
   };
   const fixture = (version: string) => ({
@@ -121,9 +125,34 @@ test("dependency audit checks transitive and nested image-size resolutions and m
     expect(vulnerable.output).toContain("GHSA-w3rx-r6r6-pgpr");
     expect(vulnerable.output).toContain("GHSA-5p2g-fcmc-qvqq");
     expect((await run(fixture("2.0.3"))).code).toBe(0);
+    for (const registry of [null, 42, {}, []]) {
+      const malformed = fixture("2.0.3");
+      Object.assign(malformed.packages, { "image-size": ["image-size@2.0.3", registry, {}, ""] });
+      expect((await run(malformed)).code).not.toBe(0);
+    }
+    for (const tuple of [
+      [42, "", {}, ""],
+      ["image-size@2.0.3", "", null, ""],
+      ["image-size@2.0.3", "", {}, 42],
+      ["image-size@2.0.3", "", {}],
+    ]) {
+      const malformed = fixture("2.0.3");
+      Object.assign(malformed.packages, { "image-size": tuple });
+      expect((await run(malformed)).code).not.toBe(0);
+    }
+    for (const key of ["broken/", "/broken", "broken//child", "@scope/", "broken/@scope/"]) {
+      const malformed = fixture("2.0.3");
+      Object.assign(malformed.packages, { [key]: ["broken@1.0.0", "", { dependencies: { missing: "*" } }, ""] });
+      const result = await run(malformed);
+      expect(result.code).not.toBe(0);
+      expect(result.output).toContain("Invalid package");
+    }
     const nested = fixture("2.0.3");
     Object.assign(nested.packages, { "pptxgenjs/image-size": ["image-size@1.2.1", "", {}, ""] });
     expect((await run(nested)).output).toContain("pptxgenjs@4.0.1 -> image-size@1.2.1");
+    const scoped = fixture("2.0.3");
+    Object.assign(scoped.packages, { "@scope/parent/@other/child": ["@other/child@1.0.0", "", { dependencies: { "image-size": "*" } }, ""] });
+    expect((await run(scoped)).code).toBe(0);
     expect((await run("{ broken")).code).not.toBe(0);
     expect((await run({ lockfileVersion: 2, workspaces: { "": {} }, packages: { "image-size": ["image-size@garbage"] } })).code).not.toBe(0);
     expect((await run({ lockfileVersion: 2, workspaces: { "": { dependencies: { missing: "*" } } }, packages: {} })).code).not.toBe(0);

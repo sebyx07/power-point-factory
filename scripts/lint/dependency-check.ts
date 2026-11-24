@@ -34,7 +34,10 @@ function audit(raw: unknown): string[] {
   const packages = object(lock.packages, "packages");
   const entries = new Map<string, { name: string; version: string; deps: string[] }>();
   for (const [key, value] of Object.entries(packages)) {
-    if (!Array.isArray(value) || value.length < 3 || typeof value[0] !== "string") throw `Invalid package ${key}`;
+    if (!/^(?:@[^/@]+\/)?[^/@]+(?:\/(?:@[^/@]+\/)?[^/@]+)*$/.test(key)) throw `Invalid package key ${key}`;
+    if (!Array.isArray(value) || value.length !== 4 || typeof value[0] !== "string" || typeof value[1] !== "string" || typeof value[3] !== "string") {
+      throw `Invalid package ${key}`;
+    }
     const match = /^((?:@[^/]+\/)?[^@/]+)@(.+)$/.exec(value[0]);
     if (!match) throw `Invalid package resolution ${key}`;
     const [, name, version] = match;
@@ -50,7 +53,9 @@ function audit(raw: unknown): string[] {
       const candidate = scope ? `${scope}/${name}` : name;
       if (entries.has(candidate)) return candidate;
       if (!scope) throw `Unresolved dependency ${name} from ${from || "workspace"}`;
-      scope = parentKey(scope);
+      const parent = parentKey(scope);
+      if (parent.length >= scope.length) throw `Invalid package scope ${scope}`;
+      scope = parent;
     }
   };
   const findings: string[] = [];
