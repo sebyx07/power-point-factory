@@ -1,7 +1,10 @@
 version: 2
-# Weekly, grouped updates. The developerz.ai maintainer agent reviews them and merges on a green
-# "CI OK" (.dz/maintainer/maintainer.yml). cooldown: a release must be 14 days old before it is
-# proposed, so broken or compromised releases are usually yanked first. Security updates skip it.
+# Weekly, grouped, quiet (owner, 2026-11-26: "not so damn much daily prs"): every ecosystem on
+# Monday, minor+patch as ONE pull request per ecosystem, security updates batched into one more per
+# ecosystem, majors individually, at most 3 open per ecosystem. The developerz.ai maintainer agent
+# reviews them and merges on a green "CI OK" (.dz/maintainer/maintainer.yml). cooldown: a release
+# must be 14 days old before it is proposed, so broken or compromised releases are usually yanked
+# first. Security updates skip it.
 updates:
   - package-ecosystem: bun
     directory: /
@@ -10,12 +13,13 @@ updates:
       day: monday
     cooldown:
       default-days: 14
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
     groups:
-      render:
-        patterns: ["pptxgenjs", "sharp", "opentype.js", "jszip", "fast-xml-parser", "pixelmatch", "lucide-static"]
-      dev-tools:
-        patterns: ["@biomejs/*", "typescript", "@types/*"]
+      bun-minor:
+        update-types: ["minor", "patch"]
+      bun-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -23,6 +27,10 @@ updates:
       day: monday
     cooldown:
       default-days: 14
+    open-pull-requests-limit: 3
     groups:
-      github-actions:
+      actions-minor:
+        update-types: ["minor", "patch"]
+      actions-security:
+        applies-to: security-updates
         patterns: ["*"]
