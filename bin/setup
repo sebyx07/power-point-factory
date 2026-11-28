@@ -8,7 +8,7 @@ warn(){ echo -e "\033[0;33m▲\033[0m  $*"; }
 command -v bun >/dev/null || { echo "bun not found → curl -fsSL https://bun.sh/install | bash"; exit 1; }
 
 # OS deps: LibreOffice (headless .pptx → pdf render), poppler (pdftoppm screenshots), fontconfig,
-# metric-compatible fonts. Same set CI installs (.github/workflows/ci.yml); Gelasio (Georgia twin) is not in apt.
+# metric-compatible fonts. CI runs this script (.github/workflows/ci.yml); Gelasio (Georgia twin) is not in apt.
 sys="libreoffice-impress poppler-utils fontconfig fonts-crosextra-carlito fonts-crosextra-caladea fonts-liberation"
 if command -v dpkg >/dev/null 2>&1; then
   if ! dpkg -s $sys >/dev/null 2>&1; then

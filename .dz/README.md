@@ -6,6 +6,6 @@ Repo-scoped configuration for the [developerz.ai](https://developerz.ai) maintai
 |---|---|
 | `maintainer/maintainer.yml` | the policy: triage, PRs, review, releases, schedules. [Reference](https://developerz.ai/docs/maintainer-yml) |
 | `pipeline/agent-pipeline.json` | the agent pipeline definition |
-| `schedules/` | what each `schedules:` checkup works from, read at `main`'s HEAD: `health.md` (weekly, Monday), `improve.md` (monthly) |
+| `schedules/` | what each `schedules:` checkup works from, read at `main`'s HEAD: `improve.md` (monthly) |
 
 Template repo: nothing is published, so there is no `release-due` brief. Agent instructions for working on the code: [`CLAUDE.md`](../CLAUDE.md) (`AGENTS.md` is a symlink to it).
