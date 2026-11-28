@@ -8,7 +8,7 @@ PowerPoint Factory is maintained by agents only. Once a month, leave it measurab
 
 - `showcase-qa`: the showcase passes `bin/deck qa all` (§1).
 - `showcase-review`: the fresh-eyes `deck-reviewer` pass on the Halden deck surfaces engine/layout findings — spacing, typography, label placement, chart readability (§1).
-- `main-red`: `main` is red or flaky, or a health-brief signal was left unfixed (§2 item 1).
+- `main-red`: `main` is red or flaky (§2 item 1).
 - `engine-wide`: an engine finding affects every deck, not only one (§2 item 2).
 - `ppt-fidelity`: LibreOffice renders differently from PowerPoint in a way QA could catch — a new check in `src/qa/checks/` with a test (§2 item 3).
 - `missing-layout`: a high-value layout from the `docs/deck-craft.md` archetypes (funnel, risk heat map, pricing tiers, org chart) is missing (§2 item 4).
@@ -21,7 +21,7 @@ Run `bin/deck qa all`, then dispatch the `deck-reviewer` agent (`.claude/agents/
 
 ## 2. Pick at most three improvements, in this order
 
-1. A red or flaky `main`, or a health-brief signal nobody fixed.
+1. A red or flaky `main`.
 2. Engine findings from step 1 that affect every deck.
 3. PowerPoint fidelity: anything LibreOffice renders differently from PowerPoint that QA could catch (new check in `src/qa/checks/` with a test).
 4. A missing high-value layout from `docs/deck-craft.md` § archetypes (funnel, risk heat map, pricing tiers, org chart): `add-layout` skill.

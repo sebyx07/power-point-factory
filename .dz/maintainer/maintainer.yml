@@ -93,13 +93,11 @@ release:
 escalate:
   ask_before_acting: [breaking_change]
 
-# Cadence (owner, 2026-11-26: "not so damn much daily prs"): health weekly on Monday, improve
-# monthly, nothing daily opens a PR. Nothing is published, so there is no release-due.
+# Cadence (owner, 2026-11-26: "not so damn much daily prs"): improve monthly, nothing fires
+# daily. Nothing is published, so there is no release-due. The weekly `health` checkup was removed on
+# 2026-11-28: across the fleet it fired 270 times in 30 days for 8 asks and no merged fix, and the
+# platform already files a fix when `main` is red.
 schedules:
-  - name: health
-    days: [mon]
-    hours_utc: [6]
-    brief_file: .dz/schedules/health.md
   # Monthly: the first Monday of the month (UTC days 1-7).
   - name: improve
     days: [mon]
@@ -122,3 +120,8 @@ scout:
 # grouped into one pull request per ecosystem).
 devops:
   watch: off
+
+# care: no docs-citation tasks. Across the fleet they were 47 tasks in 30 days for 8 docs-only
+# merges and 33 failures.
+care:
+  docs_drift: off
